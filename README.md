@@ -1,0 +1,2 @@
+# SpoinkOS
+Simple, Fast, Inivatvie
