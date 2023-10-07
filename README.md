@@ -12,9 +12,9 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 ## Installation
 
-To install [Linux Distro Name], follow these steps:
+To install SpoinkOS, follow these steps:
 
-1. [Download the ISO image](link_to_download_page) from our official website.
+1. [Download the ISO image](https://archive.org/details/spoink-os) from our official website.
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install [Linux Distro Name].
