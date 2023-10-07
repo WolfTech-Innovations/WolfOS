@@ -23,33 +23,6 @@ To install SpoinkOS, follow these steps:
 Thank you for choosing SpoinkOS! We hope you enjoy using our distro as much as we enjoyed creating it!
 
 Happy computing!
- _______
-|  >_   |
-|_______|            ..- - .              
-                   '        `.           
-                  '.- .  .--. .          
-                 |: _ | :  _ :|          
-                 |`(@)--`.(@) |          
-                 : .'     `-, :          
-                 :(_____.-'.' `          
-                 : `-.__.-'   :          
-                 `  _.    _.   .         
-                /  /  `_ '  \    .       
-               .  :          \\   \      
-              .  : _      __  .\   .     
-             .  /             : `.  \    
-            :  /      '        : `.  .   
-           '  `      :          : :  `.  
-         .`_ :       :          / '   |  
-         :' \ .      :           '__  :  
-      .--'   \`-._    .      .' :    `).  
-    ..|       \   )          :   '._.'  : 
-   ;           \-'.        ..:         / 
-   '.           \  - ....-   |        '  
-      -.         :   _____   |      .'   
-        ` -.    .'--       --`.   .'     
-            `--                --        
-
-
+  
 \-- Carl - Head of SpoinkOS Development Team
 
