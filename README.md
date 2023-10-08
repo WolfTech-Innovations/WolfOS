@@ -10,6 +10,9 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Customizability**: SpoinkOS is highly customizable, allowing you to tailor your Linux experience to your liking.
 
+- **Uses KDE**: For all your usages KDE makes it better.
+
+- **Based On Ubutu Unity Lunar Lobster**: Comes with all your Unity7 Favs!
 ## Installation
 
 To install SpoinkOS, follow these steps:
