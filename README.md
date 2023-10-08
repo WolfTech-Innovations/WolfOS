@@ -1,5 +1,5 @@
 # Welcome to SpoinkOS
-![Logo](Black White Simple Monochrome Initial Name Logo.png)
+[Logo](Black White Simple Monochrome Initial Name Logo.png)
 ## Overview
 
 SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide a smooth and efficient computing experience for everyone. Whether you're a beginner or a seasoned Linux enthusiast, our distro has something for you! 
