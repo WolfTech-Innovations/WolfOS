@@ -14,6 +14,10 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Based On Ubutu Unity Lunar Lobster**: Comes with all your Unity7 Favs!
 
+- **Uses UFW and ClamAV for security**
+
+- **Comes with VLC and GIMP**: Comes with Gimp for making Art and BFDI Memes Ofc and VLC for watching movies
+
 ## Installation
 
 To install SpoinkOS, follow these steps:
