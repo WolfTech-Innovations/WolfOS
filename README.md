@@ -13,6 +13,7 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 - **Uses KDE**: For all your usages KDE makes it better.
 
 - **Based On Ubutu Unity Lunar Lobster**: Comes with all your Unity7 Favs!
+
 ## Installation
 
 To install SpoinkOS, follow these steps:
@@ -21,6 +22,7 @@ To install SpoinkOS, follow these steps:
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install SpoinkOS.
+
 ## Conclusion 
 
 Thank you for choosing SpoinkOS! We hope you enjoy using our distro as much as we enjoyed creating it!
