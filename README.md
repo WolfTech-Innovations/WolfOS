@@ -38,4 +38,5 @@ Happy computing!
   
 \-- Carl - Head of SpoinkOS Development Team
 
-<iframe width="853" height="480" src="https://www.youtube.com/embed/mQVn_vBKlUc" title="SpoinkOS Release" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+[![SpoinkOS Release Video](https://img.youtube.com/vi/mQVn_vBKlUc/0.jpg)](https://www.youtube.com/watch?v=mQVn_vBKlUc)
+
