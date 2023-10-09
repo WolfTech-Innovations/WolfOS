@@ -12,11 +12,13 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Uses KDE**: For all your usages KDE makes it better.
 
-- **Based On Ubutu Unity Lunar Lobster**: Comes with all your Unity7 Favs!
+- **Based On Ubutu**: Comes With a Ubuntu Base
 
 - **Uses UFW and ClamAV for security**
 
 - **Comes with VLC and GIMP**: Comes with Gimp for making Art and BFDI Memes Ofc and VLC for watching movies
+
+- **Comes with Libreoffice**: Comes with office software for work
 
 ## Installation
 
