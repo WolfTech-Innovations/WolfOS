@@ -41,4 +41,4 @@ Happy computing!
 
 [![SpoinkOS Release Video](https://img.youtube.com/vi/mQVn_vBKlUc/0.jpg)](https://www.youtube.com/watch?v=mQVn_vBKlUc)
 
-![SpoinkOS Discord Server](https://discord.com/api/guilds/1161416891533885555/widget.json)
+![SpoinkOS Discord Server](https://discordapp.com/api/guilds/1161416891533885555/widget.png?style=banner4)
