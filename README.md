@@ -1,4 +1,4 @@
-
+![SpoinkOS Discord Server](https://discordapp.com/api/guilds/1161416891533885555/widget.png?style=banner2)
 # Welcome to SpoinkOS
 ![Logo](https://github.com/SpoinkOSDevs/SpoinkOS/blob/main/Black%20White%20Simple%20Monochrome%20Initial%20Name%20Logo.png)
 
@@ -40,5 +40,3 @@ Happy computing!
 \-- Carl - Head of SpoinkOS Development Team
 
 [![SpoinkOS Release Video](https://img.youtube.com/vi/mQVn_vBKlUc/0.jpg)](https://www.youtube.com/watch?v=mQVn_vBKlUc)
-
-![SpoinkOS Discord Server](https://discordapp.com/api/guilds/1161416891533885555/widget.png?style=banner4)
