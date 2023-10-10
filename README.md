@@ -1,6 +1,7 @@
 
 # Welcome to SpoinkOS
 ![Logo](https://github.com/SpoinkOSDevs/SpoinkOS/blob/main/Black%20White%20Simple%20Monochrome%20Initial%20Name%20Logo.png)
+
 ## Overview
 
 SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide a smooth and efficient computing experience for everyone. Whether you're a beginner or a seasoned Linux enthusiast, our distro has something for you! 
@@ -40,3 +41,5 @@ Happy computing!
 
 [![SpoinkOS Release Video](https://img.youtube.com/vi/mQVn_vBKlUc/0.jpg)](https://www.youtube.com/watch?v=mQVn_vBKlUc)
 
+```html
+<iframe src="https://discord.com/widget?id=1161416891533885555&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
