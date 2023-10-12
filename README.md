@@ -1,7 +1,6 @@
 # Welcome to SpoinkOS
-![Logo](https://github.com/SpoinkOSDevs/SpoinkOS/blob/main/Black%20White%20Simple%20Monochrome%20Initial%20Name%20Logo.png)
 
-![SpoinkOS Discord Server](https://discordapp.com/api/guilds/1161416891533885555/widget.png?style=banner2)
+![SpoinkOS Discord Server](https://discord.gg/f7eT26K4D7)
 
 ## Overview
 
