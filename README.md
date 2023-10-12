@@ -1,6 +1,6 @@
 # Welcome to SpoinkOS
 
-![SpoinkOS Discord Server](https://discord.gg/f7eT26K4D7)
+[SpoinkOS Discord Server](https://discord.gg/f7eT26K4D7)
 
 ## Overview
 
