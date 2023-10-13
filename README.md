@@ -20,13 +20,17 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Comes with VLC and GIMP**: Comes with Gimp for making Art and BFDI Memes Ofc and VLC for watching movies
 
-- **Comes with Libreoffice**: Comes with office software for work
+- **Comes with OnlyOffice**: Comes with office software for work
+
+- **Uses Liquorix kernel**: For a Fast Linux OS 
+
+- ***Uses the Oprea Browser**: So You can focus on what matters
 
 ## Installation
 
 To install SpoinkOS, follow these steps:
 
-1. [Download the ISO image](https://archive.org/details/spoink-os) from our official website.
+1. [Download the ISO image](https://archive.org/details/spoink-os) from Internet Archive.
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install SpoinkOS.
