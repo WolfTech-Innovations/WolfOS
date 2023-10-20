@@ -4,7 +4,7 @@
 
 [Email me](mailto:SpoinkOS@workmail.com)
 
-[archiveorg spoink-os width=560 height=384 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true]
+[archiveorg](spoink-os width=560 height=384 frameborder=0 webkitallowfullscreen=true mozallowfullscreen=true)
 
 ## Overview
 
