@@ -20,7 +20,7 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Uses KDE**: For all your usages KDE makes it better.
 
-- **Based On Ubutu**: Comes With a Ubuntu Base
+- **Based On Ubuntu**: Comes With a Ubuntu Base
 
 - **Uses UFW and ClamAV for security**
 
