@@ -4,7 +4,9 @@
 
 [Email me](mailto:SpoinkOS@workmail.com)
 
-[archiveorg](https://archive.org/embed/spoink-os)
+[Internet Archive](https://archive.org/details/spoink-os)
+
+[Direct ISO Download](https://archive.org/download/spoink-os/SpoinkOS-desktop-amd64-Blue.Whisker.Stable.iso)
 
 ## Overview
 
@@ -34,7 +36,7 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 To install SpoinkOS, follow these steps:
 
-1. [Download the ISO image](https://archive.org/download/spoink-os/SpoinkOS-desktop-amd64-2023.10.13.iso) from the Internet Archive mirrior.
+1. [Download the ISO image](https://archive.org/download/spoink-os/SpoinkOS-desktop-amd64-Blue.Whisker.Stable.iso) from the Internet Archive mirrior.
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install SpoinkOS.
