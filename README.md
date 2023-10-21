@@ -10,7 +10,7 @@
 
 [Torrent](https://archive.org/download/spoink-os/spoink-os_archive.torrent)
 
-[WordPress site(https://spoinkos.wordpress.com)
+[WordPress site](https://spoinkos.wordpress.com)
 
 ## Overview
 
