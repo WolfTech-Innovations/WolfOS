@@ -63,6 +63,3 @@ Happy computing!
 -- Carl - Head of SpoinkOS Development Team
 
 -- Meco - Head idea Manager Of SpoinkOS Development Team
-
-
-@copyright SpoinkOSDevs - 2023
