@@ -59,5 +59,10 @@ To install SpoinkOS, follow these steps:
 Thank you for choosing SpoinkOS! We hope you enjoy using our distro as much as we enjoyed creating it!
 
 Happy computing!
-  
-\-- Carl - Head of SpoinkOS Development Team
+
+-- Carl - Head of SpoinkOS Development Team
+
+-- Meco - Head idea Manager Of SpoinkOS Development Team
+
+
+@copyright SpoinkOSDevs - 2023
