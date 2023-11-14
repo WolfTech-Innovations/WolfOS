@@ -37,13 +37,13 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Uses UFW and ClamAV for security**
 
-- **Comes with VLC and GIMP**: Comes with Gimp for making Art and BFDI Memes Ofc and VLC for watching movies
+- **Comes with VLC and GIMP**: Comes with Gimp for making Art and VLC for watching movies
 
 - **Comes with OnlyOffice**: Comes with office software for work
 
 - **Uses Liquorix kernel**: For a Fast Linux OS 
 
-- **Uses the Oprea Browser**: So You can focus on what matters
+- **Uses the Oprea One Browser**: So You can focus on what matters
 
 ## Installation
 
