@@ -2,7 +2,7 @@
 
 [SpoinkOS Discord Server](https://discord.gg/f7eT26K4D7)
 
-[Email me](mailto:SpoinkOS@workmail.com)
+[Email me](mailto:SpoinkOSGithub@gmail.com)
 
 [Internet Archive](https://archive.org/details/spoink-os)
 
