@@ -10,9 +10,7 @@
 
 [Torrent](https://archive.org/download/spoink-os/spoink-os_archive.torrent)
 
-[WordPress site](https://spoinkos.wordpress.com)
-
-[GitHub Pages](https://spoinkosdevs.github.io/SpoinkOSWebsite/)
+[SpoinkOS Website (Hosted by cloudflare)](https://spoinkos.pages.dev/)
 
 [Fourms](https://spoinkos.boards.net/)
 
