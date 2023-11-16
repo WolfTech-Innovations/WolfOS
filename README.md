@@ -61,3 +61,5 @@ Happy computing!
 -- Carl - Head of SpoinkOS Development Team
 
 -- Meco - Head idea Manager Of SpoinkOS Development Team
+
+![Alt](https://repobeats.axiom.co/api/embed/9e173f4107ed537ec0ce258aff3280003b3e319f.svg "Repobeats analytics image")
