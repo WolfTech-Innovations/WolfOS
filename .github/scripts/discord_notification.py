@@ -1,13 +1,12 @@
 import os
-import base64
-import requests
-from discord import Embed, Color
+from discord import Webhook, RequestsWebhookAdapter, Embed, Color
+from dotenv import load_dotenv
 
-# Get the Base64-encoded token from the environment variable
-base64_encoded_token = os.getenv('TVRFM05UVXlNRGN3TmpBNU5qZ3hNakU0TXcuR0tnb2FNLjNsTTNnRmIyWTZkQVBRa1hDQ2NmZU12TXYwY25JXzdENUVOc0Jn', '')
+load_dotenv()
 
-# Decode Base64-encoded token
-discord_bot_token = base64.b64decode(base64_encoded_token).decode('utf-8')
+# Discord Webhook Setup
+discord_webhook_url = os.getenv('https://discord.com/api/webhooks/1175551243414949998/PRGTbBzRiIICLvtLduuhnhIxhmjI34F2n7eY3a9IdYQik5vN44HXzzb-PcgJkGSPMCE-')
+discord_webhook = Webhook.from_url(discord_webhook_url, adapter=RequestsWebhookAdapter())
 
 # Example Discord notification
 embed = Embed(
@@ -16,12 +15,4 @@ embed = Embed(
     color=Color.green()
 )
 
-# Set up the Discord Webhook URL
-discord_webhook_url = f'https://discord.com/api/webhooks/{discord_bot_token}'
-
-# Send the webhook using the requests library
-response = requests.post(discord_webhook_url, json={'embeds': [embed.to_dict()]})
-
-# Check if the request was successful
-response.raise_for_status()
-print('Discord webhook sent successfully!')
+discord_webhook.send(embed=embed)
