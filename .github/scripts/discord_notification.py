@@ -7,6 +7,9 @@ load_dotenv()
 # Discord Webhook Setup
 discord_webhook_url = os.getenv('https://discord.com/api/webhooks/1175551243414949998/PRGTbBzRiIICLvtLduuhnhIxhmjI34F2n7eY3a9IdYQik5vN44HXzzb-PcgJkGSPMCE-')
 
+if discord_webhook_url is None:
+    raise ValueError('Discord webhook URL is missing. Make sure to set DISCORD_WEBHOOK_URL in your .env file.')
+
 # Example Discord notification
 payload = {
     'content': 'GitHub Action Triggered!',
