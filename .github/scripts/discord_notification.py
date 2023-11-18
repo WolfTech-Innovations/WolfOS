@@ -5,7 +5,7 @@ from discord import Embed, Color
 
 try:
     # Get the Base64-encoded token from the environment variable
-    base64_encoded_token = os.getenv('TVRFM05UVXlNRGN3TmpBNU5qZ3hNakU0TXcuR0tnb2FNLjNsTTNnRmIyWTZkQVBRa1hDQ2NmZU12TXYwY25JXzdENUVOc0Jn', '')
+    base64_encoded_token = os.getenv('TVRFM05UVXlNRGN3TmpBNU5qZ3hNakU0TXcuR0tnb2FNLjNsTTNnRmIyWTZkQVBRa1hDQ2NmZU12TXYwY25JXzdENUVOc0Jn')
 
     # Check if the token is not empty
     if base64_encoded_token:
