@@ -24,8 +24,9 @@ jobs:
         pip install requests python-dotenv
 
     - name: Set up .env
-      run: |
-        echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" > .env
+      run: echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" > .env
 
     - name: Run Python Script
       run: python .github/scripts/discord_notification.py
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
