@@ -8,7 +8,7 @@ set -e
 iso_path="./SpoinkOS-desktop-amd64-Blue.Whisker.Stable.iso"
 
 custom_wallpaper_path="./spoinkos.png"
-#!/bin/bash
+selected_packages="kerneloops"
 
 TARGET_DEVICE=$(lsblk -d -o NAME,SIZE,TYPE | grep -e "disk" | awk '{print $1}')
 
@@ -27,6 +27,9 @@ rsync -a "$working_dir"/ /tmp/custom_ubuntu/
 # Remove Ubuntu and Kubuntu branding, and bloat
 chroot /tmp/custom_ubuntu apt-get purge -y gnome-software gnome-software-common kubuntu-web-shortcuts muon \
     ubuntu-release-upgrader-gtk update-manager update-notifier update-notifier-common
+
+# Install additional packages
+chroot /tmp/custom_ubuntu apt-get install -y $selected_packages
 
 # Remove unused packages
 chroot /tmp/custom_ubuntu apt-get autoremove -y
@@ -61,6 +64,4 @@ sudo xorriso -as mkisofs -o /tmp/custom_ubuntu.iso \
 # Cleanup
 rm -rf "$working_dir"
 
-echo "Flashing . . ."
-  # Flash the ISO to the selected device with a progress bar
-  sudo dd if=spoink_os.iso of="/dev/$SELECTED_DEVICE" bs=4M status=progress
+echo "Done!"
