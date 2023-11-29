@@ -58,6 +58,10 @@ Thank you for choosing SpoinkOS! We hope you enjoy using our distro as much as w
 
 Happy computing!
 
+Extras: 
+
+## Our Team
+
 -- Carl - Head of SpoinkOS Development Team
 
 -- Meco - Head idea Manager Of SpoinkOS Development Team
