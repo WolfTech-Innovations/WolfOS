@@ -31,8 +31,6 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Based On Ubuntu**: Comes With a Ubuntu Base
 
-- **Comes with VLC and GIMP**: Comes with Gimp for making Art Or Logos and VLC for watching movies
-
 ## Installation
 
 To install SpoinkOS, follow these steps:
