@@ -6,8 +6,6 @@
 
 [Internet Archive](https://archive.org/details/spoink-os)
 
-[Direct ISO Download](https://archive.org/download/spoink-os/SpoinkOS-desktop-amd64-Blue.Whisker.Stable.iso)
-
 [Torrent](https://archive.org/download/spoink-os/spoink-os_archive.torrent)
 
 [SpoinkOS Website (Hosted by cloudflare)](https://spoinkos.pages.dev/)
@@ -33,21 +31,13 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Based On Ubuntu**: Comes With a Ubuntu Base
 
-- **Uses UFW and ClamAV for security**
-
 - **Comes with VLC and GIMP**: Comes with Gimp for making Art Or Logos and VLC for watching movies
-
-- **Comes with OnlyOffice**: Comes with office software for work
-
-- **Uses Liquorix kernel**: For a Fast Linux OS 
-
-- **Uses the Oprea One Browser**: So You can focus on what matters
 
 ## Installation
 
 To install SpoinkOS, follow these steps:
 
-1. [Download the ISO image](https://archive.org/download/spoink-os/SpoinkOS-desktop-amd64-Blue.Whisker.Stable.iso) from the Internet Archive mirrior.
+1. [Download the ISO image](https://archive.org/details/spoink-os) from the Internet Archive mirrior.
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install SpoinkOS.
