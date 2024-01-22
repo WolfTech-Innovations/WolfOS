@@ -27,7 +27,7 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Customizability**: SpoinkOS is highly customizable, allowing you to tailor your Linux experience to your liking.
 
-- **Uses KDE**: For all your usages KDE makes it better.
+- **Uses GNOME**: For all your usages GNOME makes it better.
 
 - **Based On Ubuntu**: Comes With a Ubuntu Base
 
