@@ -47,12 +47,23 @@ Thank you for choosing SpoinkOS! We hope you enjoy using our distro as much as w
 
 Happy computing!
 
-Extras: 
+## Extras: 
 
 ## Our Team
 
 -- Carl - Head of SpoinkOS Development Team
 
 -- Meco - Head idea Manager Of SpoinkOS Development Team
+
+## Concept:
+
+SpoinkOS belives that where ever you go you have to spring or "Spoink" into action like a spring! So We came up with the name "SpoinkOS".
+
+## Pronouced: 
+
+"Spo-ink O-S" as in two words.
+
+## Github Repo Data:
+
 
 ![Alt](https://repobeats.axiom.co/api/embed/9e173f4107ed537ec0ce258aff3280003b3e319f.svg "Repobeats analytics image")
