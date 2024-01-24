@@ -1,6 +1,6 @@
 # Welcome to SpoinkOS
 
-[![Discord Notification](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/discord_notification.yml/badge.svg)](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/discord_notification.yml) [![Codacy Security Scan](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/codacy.yml/badge.svg)](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/codacy.yml)
+[![Discord Notification](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/discord_notification.yml/badge.svg)](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/discord_notification.yml)  [![Codacy Security Scan](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/codacy.yml/badge.svg)](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/codacy.yml)
 
 [SpoinkOS Discord Server](https://discord.gg/f7eT26K4D7)
 
