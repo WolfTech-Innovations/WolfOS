@@ -65,6 +65,10 @@ SpoinkOS belives that where ever you go you have to spring or "Spoink" into acti
 
 "Spo-ink O-S" as in two words.
 
+## Bugs:
+
+Bug Number 1: Ubuntu Logo still shows on boot. 
+
 ## Github Repo Data:
 
 
