@@ -69,7 +69,7 @@ SpoinkOS is copyleft, SpoinkOS, has no parent company and is owned by a person /
 
 ## Fun Fact:
 
-SpoinkOS was orignaly based on the SpoinkBub meme, where SpongeBob got a lolipop the creator thought it was funny, and thus a new OS was in the market.
+SpoinkOS was orignaly based on the SpoinkBub meme, where SpongeBob got a lolipop. Carl thought it was funny, and thus a new OS was in the market.
  
 ## Github Repo Data:
 
