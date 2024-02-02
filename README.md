@@ -18,7 +18,7 @@ PROJECT STATUS: ACTIVE
 
 RELEASE: STABLE
 
-## Overview
+## Overview:
 
 SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide a smooth and efficient computing experience for everyone. Whether you're a beginner or a seasoned Linux enthusiast, our distro has something for you! 
 
@@ -28,11 +28,11 @@ SpoinkOS is a user-friendly, open-source Linux distribution that aims to provide
 
 - **Customizability**: SpoinkOS is highly customizable, allowing you to tailor your Linux experience to your liking.
 
-- **Uses GNOME**: For all your usages GNOME makes it better.
+- **Uses GNOME**: For all your usages GNOME makes it better!
 
-- **Based On Ubuntu**: Comes With a Ubuntu Base
+- **Based On Ubuntu**
 
-## Installation
+## Installation:
 
 To install SpoinkOS, follow these steps:
 
@@ -41,7 +41,7 @@ To install SpoinkOS, follow these steps:
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install SpoinkOS.
 
-## Conclusion 
+## Conclusion:
 
 Thank you for choosing SpoinkOS! We hope you enjoy using our distro as much as we enjoyed creating it!
 
