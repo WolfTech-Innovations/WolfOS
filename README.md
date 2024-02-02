@@ -65,10 +65,14 @@ SpoinkOS belives that where ever you go you have to spring or "Spoink" into acti
 
 "Spo-ink O-S" as in two words.
 
-## Bugs:
+## Legal Stuff:
 
-Bug Number 1: Ubuntu Logo still shows on boot. 
+SpoinkOS is copyleft, SpoinkOS, has no parent company and is owned by a person / person(s) in this sense as though the name is not copyrighted, we have no affilation with Nintendo or Pokemon related products or services as though this is entirely diffrent.
 
+## Fun Fact:
+
+SpoinkOS was orignaly based on the SpoinkBub meme, where SpongeBob got a lolipop the creator thought it was funny, and thus a new OS was in the market.
+ 
 ## Github Repo Data:
 
 
