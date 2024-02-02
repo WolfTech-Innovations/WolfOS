@@ -36,28 +36,6 @@ jobs:
       run: |
         wget https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O ${{ inputs.iso_name }}.iso
 
-    - name: Install Additional Packages
-      id: install-packages
-      run: |
-        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo cubic chroot ${{ inputs.iso_name }}.iso apt-get install -y
-
-    - name: Commit Changes
-      run: |
-        git config --local user.email "actions@github.com"
-        git config --local user.name "GitHub Actions"
-        git add ${{ inputs.iso_name }}.iso
-        git commit -m "Install additional packages"
-
-    - name: Publish to Internet Archive
-      env:
-        IA_IDENTIFIER: 'spoink-os'
-        IA_SECRET: ${{ secrets.IA_SECRET }}
-      run: |
-        sudo apt-get install python3-pip -y
-        pip3 install internetarchive
-        ia configure --config /root/.config/ia.cfg
-        ia upload $IA_IDENTIFIER ${{ inputs.iso_name }}.iso
-
     - name: Push Changes
       uses: ad-m/github-push-action@master
       with:
