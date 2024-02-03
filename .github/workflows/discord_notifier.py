@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def send_discord_notification(message, color=65280):
+def send_discord_notification(message):
     discord_webhook_url = os.getenv('DISCORD_WEBHOOK_URL')
 
     if discord_webhook_url is None:
@@ -15,7 +15,7 @@ def send_discord_notification(message, color=65280):
         'embeds': [
             {
                 'title': 'Build step complete! Waiting on next step to complete . . .'
-                'color': color
+                'color': 65280
             }
         ]
     }
