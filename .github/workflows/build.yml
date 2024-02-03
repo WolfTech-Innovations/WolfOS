@@ -109,13 +109,14 @@ jobs:
     needs: build-iso
     runs-on: ubuntu-latest
     steps:
-    
     - name: Setup IA Configuration
       run: |
         echo "Setting up Internet Archive configuration..."
         sudo apt-get install python3-pip -y
         pip3 install internetarchive
         ia configure --config /root/.config/ia.cfg
+        echo "access_key: ${{ secrets.IA_ACCESS_KEY }}" >> /root/.config/ia.cfg
+        echo "secret_key: ${{ secrets.IA_SECRET_KEY }}" >> /root/.config/ia.cfg
 
     - name: Publish to Internet Archive
       run: |
