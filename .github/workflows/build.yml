@@ -15,12 +15,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-
-    - name: Add Cubic PPA
-      run: |
-        sudo add-apt-repository ppa:cubic-wizard/release -y
-        sudo apt-get update
-
+        
     - name: Install Required Tools
       run: |
         sudo apt-get install genisoimage git-lfs -y
@@ -63,7 +58,7 @@ jobs:
     - name: Install Additional Packages
       id: install-packages
       run: |
-        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo chroot . apt-get install -y
+        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo chroot . sudo apt install -y
 
     - name: Create ISO Image
       run: |
