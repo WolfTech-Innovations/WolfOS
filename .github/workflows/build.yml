@@ -32,10 +32,20 @@ jobs:
         echo "Installing Cubic..."
         sudo apt-get install cubic -y
 
+    - name: Notify Discord - Setup
+      run: python discord_notifier.py
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
   download-previous:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+    - name: Notify Discord - Download Previous
+      run: python discord_notifier.py
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
     - name: Determine Previous ISO
       run: |
         echo "Determining the previous ISO..."
@@ -62,9 +72,16 @@ jobs:
     needs: download-previous
     runs-on: ubuntu-latest
     steps:
+    - name: Notify Discord - Build ISO
+      run: python discord_notifier.py
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
     - name: Generate Timestamp Code Name
       id: timestamp-code-name
-      run: echo "CODE_NAME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
+      run: |
+        echo "Generating a timestamp code name..."
+        echo "CODE_NAME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
     - name: Download Custom ISO
       run: |
@@ -91,6 +108,11 @@ jobs:
     needs: build-iso
     runs-on: ubuntu-latest
     steps:
+    - name: Notify Discord - Publish to Archive
+      run: python discord_notifier.py
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
     - name: Setup IA Configuration
       run: |
         echo "Setting up Internet Archive configuration..."
@@ -108,6 +130,11 @@ jobs:
     needs: publish-to-archive
     runs-on: ubuntu-latest
     steps:
+    - name: Notify Discord - Clean Up
+      run: python discord_notifier.py
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
     - name: Clean Up
       run: |
         echo "Cleaning up temporary files..."
