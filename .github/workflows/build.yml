@@ -18,7 +18,7 @@ jobs:
 
     - name: Install Required Tools
       run: |
-        apt-get update -qq && apt-get install -yqq genisoimage git-lfs wget
+        sudo apt-get update -qq && sudo apt-get install -yqq genisoimage git-lfs wget
 
     - name: Download Previous ISO
       id: download-previous
@@ -38,7 +38,7 @@ jobs:
           cd "$(shuf -n 1 -e iso_mount/*/)"
 
           # Try installing packages
-          if chroot . apt-get update -qq && chroot . apt-get install -yqq --no-install-recommends $1; then
+          if sudo chroot . apt-get update -qq && sudo chroot . apt-get install -yqq --no-install-recommends $1; then
             return 0
           else
             echo "Package installation failed. Retrying..."
@@ -51,12 +51,28 @@ jobs:
 
     - name: Run Code Scanning (shellcheck and codespell)
       run: |
-        retry_codescan() {
-          shellcheck ./**/*.sh && codespell --check-filenames --skip="*.iso" --fix
-        }
+        sudo apt-get install -yqq shellcheck
+        shellcheck --format=gcc ./**/*.sh
 
-        # Retry code scanning
-        until retry_codescan; do :; done
+        sudo apt-get install -yqq codespell
+        codespell --check-filenames --skip="*.iso" --fix
+
+    - name: Static Code Analysis with SonarQube
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Automated Formatting with Prettier
+      run: |
+        sudo apt-get install -yqq npm
+        npm install -g prettier
+        prettier --write .
+
+    - name: Dependency Scanning with Snyk
+      run: |
+        sudo apt-get install -yqq nodejs
+        npm install -g snyk
+        snyk test
 
     - name: Auto-fixing with codespell
       run: |
