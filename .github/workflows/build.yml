@@ -33,7 +33,7 @@ jobs:
         sudo apt-get install cubic -y
 
     - name: Notify Discord - Setup
-      run: python discord_notifier.py
+      run: python .github/workflows/discord_notifier.py
       env:
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Notify Discord - Download Previous
-      run: python discord_notifier.py
+      run: python .github/workflows/discord_notifier.py
       env:
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Notify Discord - Build ISO
-      run: python discord_notifier.py
+      run: python .github/workflows/discord_notifier.py
       env:
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
@@ -95,21 +95,13 @@ jobs:
       run: |
         echo "Installing additional packages..."
         echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo cubic chroot $iso_name.iso apt-get install -y
-
-    - name: Commit Changes
-      run: |
-        echo "Committing changes..."
-        git config --local user.email "actions@github.com"
-        git config --local user.name "GitHub Actions"
-        git add $iso_name.iso previous_iso.txt
-        git commit -m "Install additional packages and delete previous version"
-
+        
   publish-to-archive:
     needs: build-iso
     runs-on: ubuntu-latest
     steps:
     - name: Notify Discord - Publish to Archive
-      run: python discord_notifier.py
+      run: python .github/workflows/discord_notifier.py
       env:
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
