@@ -65,8 +65,13 @@ jobs:
 
     - name: Unpack ISO
       run: |
-        sudo mkdir -p iso_mount
-        sudo mount -o loop ${{ if eq(steps.download-previous.outputs.previous_iso_name, 'latest') }}latest.iso${{ else }}previous.iso${{ endif }} iso_mount
+        if [ "$PREVIOUS_ISO_NAME" == "latest" ]; then
+          sudo mkdir -p iso_mount
+          sudo mount -o loop latest.iso iso_mount
+        else
+          sudo mkdir -p iso_mount
+          sudo mount -o loop previous.iso iso_mount
+        fi
 
     - name: CD into Unpacked ISO
       run: |
