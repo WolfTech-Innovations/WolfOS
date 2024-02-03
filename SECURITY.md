@@ -1,9 +1,5 @@
 # Security Policy
 
-## Supported Versions
+## Issue Reporting:
 
-| Version |      Supported     |  Codenames   | 
-| ------- | ------------------ |--------------|
-| 2.1.0   | ✅                 |Immature Star |
-| 1.4.0   | :x:                |Blue Whisker  |
------------------------------------------------
+To Report an Issue go to https://SpoinkOSDevs/SpoinkOS/bug-hunting.md
