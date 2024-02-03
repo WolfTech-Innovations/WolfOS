@@ -35,7 +35,7 @@ jobs:
     - name: Install Python Packages and dev tools
       run: | 
          sudo apt-get install build-essential libssl-dev libffi-dev
-         pip install requests
+         pip install requests setuptools wheel
          pip install --no-use-pep517 python-dotenv
          
     - name: Notify Discord - Setup
