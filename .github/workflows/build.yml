@@ -1,4 +1,4 @@
-name: Build
+name: Build, Release, and Store Custom Ubuntu ISO
 
 on:
   workflow_dispatch:
@@ -8,49 +8,34 @@ on:
         required: true
 
 jobs:
-  setup:
+  build-iso:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0  # Ensure the entire repository history is available for determining the previous ISO.
 
-    - name: Set up Python
+    - name: Setup Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
     - name: Add Cubic PPA
       run: |
-        echo "Adding Cubic PPA..."
         sudo add-apt-repository ppa:cubic-wizard/release -y
         sudo apt-get update
 
-    - name: Install Cubic
+    - name: Install Required Tools
       run: |
-        echo "Installing Cubic..."
-        sudo apt-get install cubic -y
+        sudo apt-get install genisoimage git-lfs -y
 
-    - name: Install Python Packages and dev tools
-      run: | 
-         sudo apt-get install build-essential libssl-dev libffi-dev
-         pip install requests setuptools wheel
-         pip install --no-use-pep517 python-dotenv
-         
-    - name: Notify Discord - Setup
-      run: python .github/workflows/discord_notifier.py
-      env:
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-
-  download-previous:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
+    - name: Generate Random Code Name
+      id: random-code-name
+      run: echo "CODE_NAME=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)" >> $GITHUB_ENV
 
     - name: Determine Previous ISO
+      id: determine-previous
       run: |
-        echo "Determining the previous ISO..."
         if [ -f previous_iso.txt ]; then
           previous_iso_name=$(cat previous_iso.txt)
         else
@@ -61,7 +46,6 @@ jobs:
     - name: Download Previous ISO
       id: download-previous
       run: |
-        echo "Downloading the previous ISO..."
         if [ "$PREVIOUS_ISO_NAME" == "latest" ]; then
           # If no previous ISO is found, download the latest added version
           wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
@@ -70,70 +54,46 @@ jobs:
           rm previous.iso
         fi
 
-  build-iso:
-    needs: download-previous
-    runs-on: ubuntu-latest
-    steps:
-    
-    - name: Generate Timestamp Code Name
-      id: timestamp-code-name
-      run: |
-        echo "Generating a timestamp code name..."
-        echo "CODE_NAME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
-
     - name: Download Custom ISO
       run: |
         iso_name=${{ env.CODE_NAME }}-$(date +'%Y%m%d%H%M%S')
-        echo "Downloading the custom ISO..."
         wget https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O $iso_name.iso
         echo "$iso_name" > previous_iso.txt
-
-    - name: Add Cubic PPA
-      run: |
-        echo "Adding Cubic PPA..."
-        sudo add-apt-repository ppa:cubic-wizard/release -y
-        sudo apt-get update
-
-    - name: Install Cubic
-      run: |
-        echo "Installing Cubic..."
-        sudo apt-get install cubic -y
 
     - name: Install Additional Packages
       id: install-packages
       run: |
-        echo "Installing additional packages..."
-        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo cubic chroot $iso_name.iso apt-get install -y
-        
-  publish-to-archive:
-    needs: build-iso
-    runs-on: ubuntu-latest
-    steps:
-    - name: Setup IA Configuration
-      run: |
-        echo "Setting up Internet Archive configuration..."
-        sudo apt-get install python3-pip -y
-        pip3 install internetarchive
-        ia configure --config /root/.config/ia.cfg
-        echo "access_key: ${{ secrets.IA_ACCESS_KEY }}" >> /root/.config/ia.cfg
-        echo "secret_key: ${{ secrets.IA_SECRET_KEY }}" >> /root/.config/ia.cfg
+        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo chroot $iso_name.iso apt-get install -y
 
-    - name: Publish to Internet Archive
+    - name: Create ISO Image
       run: |
-        echo "Publishing the ISO to Internet Archive..."
-        ia upload spoink-os $iso_name.iso
-        echo "ISO published to Internet Archive."
+        sudo genisoimage -o custom.iso -r -J -no-emul-boot -boot-load-size 4 -boot-info-table -b isolinux/isolinux.bin -c isolinux/boot.cat -input-charset UTF-8 -V "Custom Ubuntu ISO" .
 
-  clean-up:
-    needs: publish-to-archive
-    runs-on: ubuntu-latest
-    steps:
-    - name: Notify Discord - Clean Up
-      run: python .github/workflows/discord_notifier.py
-      env:
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-
-    - name: Clean Up
+    - name: Move ISO to GitHub LFS
       run: |
-        echo "Cleaning up temporary files..."
-        rm -f latest.iso
+        git lfs track "*.iso"
+        git add custom.iso
+        git commit -m "Build custom ISO"
+        git push
+
+    - name: Create Release
+      id: create-release
+      run: |
+        release_name="SpoinkOS Release $(date +'%Y%m%d%H%M%S')"
+        release_tag="v$(date +'%Y%m%d%H%M%S')"
+        echo "RELEASE_NAME=$release_name" >> $GITHUB_ENV
+        echo "RELEASE_TAG=$release_tag" >> $GITHUB_ENV
+        git tag -a $release_tag -m "$release_name"
+        git push origin $release_tag
+
+    - name: Upload Release Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: release-artifact
+        path: .
+
+    - name: Store ISO as Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: custom-iso
+        path: custom.iso
