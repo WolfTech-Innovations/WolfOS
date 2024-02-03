@@ -74,10 +74,6 @@ jobs:
     needs: download-previous
     runs-on: ubuntu-latest
     steps:
-    - name: Notify Discord - Build ISO
-      run: python .github/workflows/discord_notifier.py
-      env:
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     - name: Generate Timestamp Code Name
       id: timestamp-code-name
