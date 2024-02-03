@@ -1,4 +1,4 @@
-name: Build and Publish Custom Ubuntu ISO
+name: Build
 
 on:
   workflow_dispatch:
@@ -35,7 +35,8 @@ jobs:
     - name: Install Python Packages
       run: | 
          pip install requests
-       
+         pip install dotenv
+         
     - name: Notify Discord - Setup
       run: python .github/workflows/discord_notifier.py
       env:
