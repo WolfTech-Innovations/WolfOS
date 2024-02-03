@@ -56,9 +56,11 @@ jobs:
 
     - name: Download Custom ISO
       run: |
-        iso_name=${{ env.CODE_NAME }}-$(date +'%Y%m%d%H%M%S')
-        wget https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O $iso_name.iso
-        echo "$iso_name" > previous_iso.txt
+        if [ "$PREVIOUS_ISO_NAME" != "latest" ]; then
+          iso_name=${{ env.CODE_NAME }}-$(date +'%Y%m%d%H%M%S')
+          wget https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O $iso_name.iso
+          echo "$iso_name" > previous_iso.txt
+        fi
 
     - name: Install Additional Packages
       id: install-packages
@@ -76,10 +78,15 @@ jobs:
         git commit -m "Build custom ISO"
         git push
 
+    - name: Install dotenv, requests, and Run Discord Notifier
+      run: |
+        pip install --no-use-pep517 python-dotenv requests
+        python .github/workflows/discord_notifier.py
+
     - name: Create Release
       id: create-release
       run: |
-        release_name="SpoinkOS Release $(date +'%Y%m%d%H%M%S')"
+        release_name="Custom ISO Release $(date +'%Y%m%d%H%M%S')"
         release_tag="v$(date +'%Y%m%d%H%M%S')"
         echo "RELEASE_NAME=$release_name" >> $GITHUB_ENV
         echo "RELEASE_TAG=$release_tag" >> $GITHUB_ENV
