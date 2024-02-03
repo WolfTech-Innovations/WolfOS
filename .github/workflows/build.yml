@@ -32,6 +32,10 @@ jobs:
         echo "Installing Cubic..."
         sudo apt-get install cubic -y
 
+    - name: Install Python Packages
+      run: | 
+         pip install requests
+       
     - name: Notify Discord - Setup
       run: python .github/workflows/discord_notifier.py
       env:
