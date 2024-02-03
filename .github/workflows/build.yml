@@ -58,7 +58,8 @@ jobs:
     - name: Install Additional Packages
       id: install-packages
       run: |
-        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo chroot . /usr/bin/apt install -y
+          echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo chroot . /bin/bash -c 'apt update && apt install -y $0'
+
 
     - name: Create ISO Image
       run: |
