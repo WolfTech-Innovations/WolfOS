@@ -129,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Notify Discord - Clean Up
-      run: python discord_notifier.py
+      run: python .github/workflows/discord_notifier.py
       env:
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
