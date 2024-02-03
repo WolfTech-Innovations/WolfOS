@@ -1,4 +1,4 @@
-name: Build ISO
+name: Build and Publish Custom Ubuntu ISO
 
 on:
   workflow_dispatch:
@@ -62,11 +62,9 @@ jobs:
     needs: download-previous
     runs-on: ubuntu-latest
     steps:
-    - name: Generate Random Code Name
-      id: random-code-name
-      run: |
-        echo "Generating a random code name..."
-        echo "CODE_NAME=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)" >> $GITHUB_ENV
+    - name: Generate Timestamp Code Name
+      id: timestamp-code-name
+      run: echo "CODE_NAME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_ENV
 
     - name: Download Custom ISO
       run: |
