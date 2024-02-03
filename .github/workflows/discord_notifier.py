@@ -15,7 +15,6 @@ def send_discord_notification(message):
         'embeds': [
             {
                 'title': 'Build step complete! Waiting on next step to complete . . .'
-                'color': 65280
             }
         ]
     }
