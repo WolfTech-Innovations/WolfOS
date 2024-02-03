@@ -14,7 +14,7 @@ def send_discord_notification(message):
         'content': message,
         'embeds': [
             {
-                'title': 'Build step complete! Waiting on next step to complete . . .'
+                'title': 'Build step complete! Waiting on next step to complete . . . NOTICE: No more messages will be after this.'
             }
         ]
     }
