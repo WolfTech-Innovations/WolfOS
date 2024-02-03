@@ -1,4 +1,4 @@
-name: Build
+name: Build and Release
 
 on:
   workflow_dispatch:
@@ -8,13 +8,27 @@ on:
         required: true
 
 jobs:
-  build-iso:
+  pre-optimization:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
+    - name: Set Maximum CPU Cores and RAM for Processes
+      run: |
+        # Adjust the resource allocation as needed
+        sudo sysctl -w kernel.sched_child_runs_first=0
+        sudo sysctl -w kernel.sched_autogroup_enabled=0
+        sudo sysctl -w kernel.sched_latency_ns=1000000
+        sudo sysctl -w kernel.sched_min_granularity_ns=2000000
+        sudo sysctl -w kernel.sched_wakeup_granularity_ns=1000000
+        sudo sysctl -w vm.swappiness=1
+
+  build-iso:
+    runs-on: ubuntu-latest
+    needs: pre-optimization
+
+    steps:
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
@@ -28,10 +42,6 @@ jobs:
     - name: Install Required Tools
       run: |
         sudo apt-get install genisoimage git-lfs -y
-
-    - name: Generate Random Code Name
-      id: random-code-name
-      run: echo "CODE_NAME=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)" >> $GITHUB_ENV
 
     - name: Determine Previous ISO
       id: determine-previous
@@ -47,25 +57,26 @@ jobs:
       id: download-previous
       run: |
         if [ "$PREVIOUS_ISO_NAME" == "latest" ]; then
-          # If no previous ISO is found, download the latest added version
           wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
         else
           wget https://archive.org/download/spoink-os/${PREVIOUS_ISO_NAME}.iso -O previous.iso
           rm previous.iso
         fi
 
-    - name: Download Custom ISO
+    - name: Unpack ISO
       run: |
-        if [ "$PREVIOUS_ISO_NAME" != "latest" ]; then
-          iso_name=${{ env.CODE_NAME }}-$(date +'%Y%m%d%H%M%S')
-          wget https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O $iso_name.iso
-          echo "$iso_name" > previous_iso.txt
-        fi
+        sudo mkdir -p iso_mount
+        sudo mount -o loop ${{ if eq(steps.download-previous.outputs.previous_iso_name, 'latest') }}latest.iso${{ else }}previous.iso${{ endif }} iso_mount
+
+    - name: CD into Unpacked ISO
+      run: |
+        cd iso_mount
+        ls -la
 
     - name: Install Additional Packages
       id: install-packages
       run: |
-        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo chroot $iso_name.iso apt-get install -y
+        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo chroot . apt-get install -y
 
     - name: Create ISO Image
       run: |
@@ -86,21 +97,27 @@ jobs:
     - name: Create Release
       id: create-release
       run: |
-        release_name="Custom ISO Release $(date +'%Y%m%d%H%M%S')"
+        release_name="Build"
         release_tag="v$(date +'%Y%m%d%H%M%S')"
         echo "RELEASE_NAME=$release_name" >> $GITHUB_ENV
         echo "RELEASE_TAG=$release_tag" >> $GITHUB_ENV
         git tag -a $release_tag -m "$release_name"
         git push origin $release_tag
 
-    - name: Upload Release Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: release-artifact
-        path: .
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: build-iso
 
-    - name: Store ISO as Build Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: custom-iso
-        path: custom.iso
+    steps:
+    - name: Clean Up
+      run: |
+        sudo umount iso_mount
+        sudo rmdir iso_mount
+        rm -rf Build.iso
+
+    - name: Clean Up LFS
+      run: |
+        git lfs untrack "*.iso"
+        git rm --cached custom.iso
+        git commit -m "Clean up"
+        git push
