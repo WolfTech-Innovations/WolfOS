@@ -24,11 +24,7 @@ SpoinkOS is ubuntu but striped of bloatware so you can focus on what matters.
 
 ## Features
 
-- **User-Friendly Interface**: Our distro comes with a clean and intuitive desktop environment that makes it easy to use, even for newcomers.
-
-- **Customizability**: SpoinkOS is highly customizable, allowing you to tailor your Linux experience to your liking.
-
-- **Uses GNOME**: For all your usages GNOME makes it better!
+- **User-Friendly Interface**: Our distro comes with a clean and intuitive desktop environment called GNOME that makes it easy to use, even for newcomers.
 
 - **Based On Ubuntu**
 
