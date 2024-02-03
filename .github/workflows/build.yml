@@ -15,57 +15,57 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
-        
+
     - name: Install Required Tools
       run: |
-        sudo apt-get install genisoimage git-lfs -y
-
-    - name: Determine Previous ISO
-      id: determine-previous
-      run: |
-        if [ -f previous_iso.txt ]; then
-          previous_iso_name=$(cat previous_iso.txt)
-        else
-          previous_iso_name="latest"
-        fi
-        echo "PREVIOUS_ISO_NAME=$previous_iso_name" >> $GITHUB_ENV
+        apt-get update -qq && apt-get install -yqq genisoimage git-lfs wget
 
     - name: Download Previous ISO
       id: download-previous
       run: |
-        if [ "$PREVIOUS_ISO_NAME" == "latest" ]; then
-          wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
-        else
-          wget https://archive.org/download/spoink-os/${PREVIOUS_ISO_NAME}.iso -O previous.iso
-          rm previous.iso
-        fi
+        wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
 
     - name: Unpack ISO
       run: |
-        if [ "$PREVIOUS_ISO_NAME" == "latest" ]; then
-          sudo mkdir -p iso_mount
-          sudo mount -o loop latest.iso iso_mount
-        else
-          sudo mkdir -p iso_mount
-          sudo mount -o loop previous.iso iso_mount
-        fi
-
-    - name: CD into Unpacked ISO
-      run: |
-        cd iso_mount
-        ls -la
-        cd .disk
-        ls -la
+        sudo mkdir -p iso_mount
+        sudo mount -o loop latest.iso iso_mount
 
     - name: Install Additional Packages
       id: install-packages
       run: |
-          echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo chroot . /bin/bash -c 'apt update && apt install -y $0'
+        retry_install() {
+          # Change into a random directory within iso_mount
+          cd "$(shuf -n 1 -e iso_mount/*/)"
 
+          # Try installing packages
+          if chroot . apt-get update -qq && chroot . apt-get install -yqq --no-install-recommends $1; then
+            return 0
+          else
+            echo "Package installation failed. Retrying..."
+            return 1
+          fi
+        }
+
+        # Retry until the installation succeeds
+        until retry_install "${{ inputs.package_names }}"; do :; done
+
+    - name: Run Code Scanning (shellcheck and codespell)
+      run: |
+        retry_codescan() {
+          shellcheck ./**/*.sh && codespell --check-filenames --skip="*.iso" --fix
+        }
+
+        # Retry code scanning
+        until retry_codescan; do :; done
+
+    - name: Auto-fixing with codespell
+      run: |
+        pip install codespell
+        codespell --check-filenames --skip="*.iso" --fix
 
     - name: Create ISO Image
       run: |
-        sudo genisoimage -o custom.iso -r -J -no-emul-boot -boot-load-size 4 -boot-info-table -b isolinux/isolinux.bin -c isolinux/boot.cat -input-charset UTF-8 -V "Custom Ubuntu ISO" .
+        sudo genisoimage -o custom.iso -r -J -no-emul-boot -boot-load-size 4 -boot-info-table -b isolinux/isolinux.bin -c isolinux/boot.cat -input-charset UTF-8 -V "Custom Ubuntu ISO" -quiet .
 
     - name: Move ISO to GitHub LFS
       run: |
@@ -98,11 +98,11 @@ jobs:
       run: |
         sudo umount iso_mount
         sudo rmdir iso_mount
-        rm -rf Build.iso
+        rm -f custom.iso latest.iso
 
     - name: Clean Up LFS
       run: |
         git lfs untrack "*.iso"
-        git rm --cached custom.iso
+        git rm --cached custom.iso latest.iso
         git commit -m "Clean up"
         git push
