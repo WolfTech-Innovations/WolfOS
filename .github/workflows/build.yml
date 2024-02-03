@@ -74,7 +74,7 @@ jobs:
     needs: download-previous
     runs-on: ubuntu-latest
     steps:
-
+    
     - name: Generate Timestamp Code Name
       id: timestamp-code-name
       run: |
@@ -98,11 +98,7 @@ jobs:
     needs: build-iso
     runs-on: ubuntu-latest
     steps:
-    - name: Notify Discord - Publish to Archive
-      run: python .github/workflows/discord_notifier.py
-      env:
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-
+    
     - name: Setup IA Configuration
       run: |
         echo "Setting up Internet Archive configuration..."
