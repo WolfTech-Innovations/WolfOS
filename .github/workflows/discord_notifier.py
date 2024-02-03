@@ -3,7 +3,7 @@ import requests
 from dotenv import load_dotenv
 
 load_dotenv()
-message = 'Build step complete! Waiting on next step to complete . . .'
+
 def send_discord_notification(message, color=65280):
     discord_webhook_url = os.getenv('DISCORD_WEBHOOK_URL')
 
@@ -14,7 +14,7 @@ def send_discord_notification(message, color=65280):
         'content': message,
         'embeds': [
             {
-                'title': message,
+                'title': 'Build step complete! Waiting on next step to complete . . .'
                 'color': color
             }
         ]
