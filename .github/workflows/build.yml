@@ -47,10 +47,6 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-    - name: Notify Discord - Download Previous
-      run: python .github/workflows/discord_notifier.py
-      env:
-        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     - name: Determine Previous ISO
       run: |
