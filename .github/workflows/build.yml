@@ -32,9 +32,11 @@ jobs:
         echo "Installing Cubic..."
         sudo apt-get install cubic -y
 
-    - name: Install Python Packages
+    - name: Install Python Packages and dev tools
       run: | 
+         sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
          pip install requests
+         pip install dotenv
          
     - name: Notify Discord - Setup
       run: python .github/workflows/discord_notifier.py
