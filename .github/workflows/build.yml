@@ -1,4 +1,4 @@
-name: Build and Publish Custom Ubuntu ISO
+name: Build ISO
 
 on:
   workflow_dispatch:
@@ -6,37 +6,111 @@ on:
       package_names:
         description: 'Comma-separated list of additional packages to install'
         required: true
-      iso_name:
-        description: 'Name for the custom ISO'
-        required: true
 
 jobs:
-  build-iso:
+  setup:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Ensure the entire repository history is available for determining the previous ISO.
 
-    - name: Setup Python
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
     - name: Add Cubic PPA
       run: |
+        echo "Adding Cubic PPA..."
         sudo add-apt-repository ppa:cubic-wizard/release -y
         sudo apt-get update
 
     - name: Install Cubic
       run: |
+        echo "Installing Cubic..."
         sudo apt-get install cubic -y
+
+  download-previous:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+    - name: Determine Previous ISO
+      run: |
+        echo "Determining the previous ISO..."
+        if [ -f previous_iso.txt ]; then
+          previous_iso_name=$(cat previous_iso.txt)
+        else
+          previous_iso_name="latest"
+        fi
+        echo "PREVIOUS_ISO_NAME=$previous_iso_name" >> $GITHUB_ENV
+
+    - name: Download Previous ISO
+      id: download-previous
+      run: |
+        echo "Downloading the previous ISO..."
+        if [ "$PREVIOUS_ISO_NAME" == "latest" ]; then
+          # If no previous ISO is found, download the latest added version
+          wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
+        else
+          wget https://archive.org/download/spoink-os/${PREVIOUS_ISO_NAME}.iso -O previous.iso
+          rm previous.iso
+        fi
+
+  build-iso:
+    needs: download-previous
+    runs-on: ubuntu-latest
+    steps:
+    - name: Generate Random Code Name
+      id: random-code-name
+      run: |
+        echo "Generating a random code name..."
+        echo "CODE_NAME=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)" >> $GITHUB_ENV
 
     - name: Download Custom ISO
       run: |
-        wget https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O ${{ inputs.iso_name }}.iso
+        iso_name=${{ env.CODE_NAME }}-$(date +'%Y%m%d%H%M%S')
+        echo "Downloading the custom ISO..."
+        wget https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O $iso_name.iso
+        echo "$iso_name" > previous_iso.txt
 
-    - name: Push Changes
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Install Additional Packages
+      id: install-packages
+      run: |
+        echo "Installing additional packages..."
+        echo "${{ inputs.package_names }}" | tr ',' '\n' | xargs sudo cubic chroot $iso_name.iso apt-get install -y
+
+    - name: Commit Changes
+      run: |
+        echo "Committing changes..."
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+        git add $iso_name.iso previous_iso.txt
+        git commit -m "Install additional packages and delete previous version"
+
+  publish-to-archive:
+    needs: build-iso
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup IA Configuration
+      run: |
+        echo "Setting up Internet Archive configuration..."
+        sudo apt-get install python3-pip -y
+        pip3 install internetarchive
+        ia configure --config /root/.config/ia.cfg
+
+    - name: Publish to Internet Archive
+      run: |
+        echo "Publishing the ISO to Internet Archive..."
+        ia upload spoink-os $iso_name.iso
+        echo "ISO published to Internet Archive."
+
+  clean-up:
+    needs: publish-to-archive
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clean Up
+      run: |
+        echo "Cleaning up temporary files..."
+        rm -f latest.iso
