@@ -20,7 +20,7 @@ RELEASE: STABLE
 
 ## Overview:
 
-SpoinkOS is basicly ubntu but striped of bloatware so you can focus on what matters.
+SpoinkOS is ubuntu but striped of bloatware so you can focus on what matters.
 
 ## Features
 
