@@ -88,6 +88,17 @@ jobs:
         wget https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O $iso_name.iso
         echo "$iso_name" > previous_iso.txt
 
+    - name: Add Cubic PPA
+      run: |
+        echo "Adding Cubic PPA..."
+        sudo add-apt-repository ppa:cubic-wizard/release -y
+        sudo apt-get update
+
+    - name: Install Cubic
+      run: |
+        echo "Installing Cubic..."
+        sudo apt-get install cubic -y
+
     - name: Install Additional Packages
       id: install-packages
       run: |
