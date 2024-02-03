@@ -27,6 +27,6 @@ jobs:
       run: echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" > .env
 
     - name: Run Python Script
-      run: python .github/scripts/discord_notification.py
+      run: python .github/workflows/build.py
       env:
         DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
