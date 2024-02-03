@@ -1,4 +1,4 @@
-name: Build, Release, and Store Custom Ubuntu ISO
+name: Build
 
 on:
   workflow_dispatch:
