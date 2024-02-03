@@ -54,6 +54,8 @@ jobs:
       run: |
         cd iso_mount
         ls -la
+        cd disk
+        ls -la
 
     - name: Install Additional Packages
       id: install-packages
