@@ -68,9 +68,12 @@ jobs:
 
     - name: Upload ISO Chunks to Release using Git LFS
       id: upload-release-asset
-      run: |
-        git lfs fetch
-        git lfs push --all origin
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: latest_chunkaa
+        asset_name: latest_chunkaa
+        asset_content_type: application/octet-stream
       env:
         GITHUB_TOKEN: ${{ env.GH_TOKEN }}
 
