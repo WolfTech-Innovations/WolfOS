@@ -1,124 +1,27 @@
-name: Build and Release
+- name: Install Additional Packages
+  id: install-packages
+  run: |
+    retry_install() {
+      # Change into a random directory within iso_mount
+      cd "$(shuf -n 1 -e iso_mount/*/)"
 
-on:
-  workflow_dispatch:
-    inputs:
-      package_names:
-        description: 'Comma-separated list of additional packages to install'
-        required: true
+      # Mount essential directories into the chroot environment
+      sudo mount --bind /proc ./proc
+      sudo mount --bind /sys ./sys
+      sudo mount --bind /dev ./dev
 
-jobs:
-  build-iso:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      # Try installing packages
+      if sudo chroot . /bin/bash -c 'apt-get update -qq && apt-get install -yqq --no-install-recommends $0'; then
+        # Cleanup: Unmount the directories
+        sudo umount ./proc ./sys ./dev
+        return 0
+      else
+        echo "Package installation failed. Retrying..."
+        # Cleanup: Unmount the directories before retrying
+        sudo umount ./proc ./sys ./dev
+        return 1
+      fi
+    }
 
-    - name: Install Required Tools
-      run: |
-        sudo apt-get update -qq && sudo apt-get install -yqq genisoimage git-lfs wget
-
-    - name: Download Previous ISO
-      id: download-previous
-      run: |
-        wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
-
-    - name: Unpack ISO
-      run: |
-        sudo mkdir -p iso_mount
-        sudo mount -o loop latest.iso iso_mount
-
-    - name: Install Additional Packages
-      id: install-packages
-      run: |
-        retry_install() {
-          # Change into a random directory within iso_mount
-          cd "$(shuf -n 1 -e iso_mount/*/)"
-
-          # Try installing packages
-          if sudo chroot . apt-get update -qq && sudo chroot . apt-get install -yqq --no-install-recommends $1; then
-            return 0
-          else
-            echo "Package installation failed. Retrying..."
-            return 1
-          fi
-        }
-
-        # Retry until the installation succeeds
-        until retry_install "${{ inputs.package_names }}"; do :; done
-
-    - name: Run Code Scanning (shellcheck and codespell)
-      run: |
-        sudo apt-get install -yqq shellcheck
-        shellcheck --format=gcc ./**/*.sh
-
-        sudo apt-get install -yqq codespell
-        codespell --check-filenames --skip="*.iso" --fix
-
-    - name: Static Code Analysis with SonarQube
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-    - name: Automated Formatting with Prettier
-      run: |
-        sudo apt-get install -yqq npm
-        npm install -g prettier
-        prettier --write .
-
-    - name: Dependency Scanning with Snyk
-      run: |
-        sudo apt-get install -yqq nodejs
-        npm install -g snyk
-        snyk test
-
-    - name: Auto-fixing with codespell
-      run: |
-        pip install codespell
-        codespell --check-filenames --skip="*.iso" --fix
-
-    - name: Create ISO Image
-      run: |
-        sudo genisoimage -o custom.iso -r -J -no-emul-boot -boot-load-size 4 -boot-info-table -b isolinux/isolinux.bin -c isolinux/boot.cat -input-charset UTF-8 -V "Custom Ubuntu ISO" -quiet .
-
-    - name: Move ISO to GitHub LFS
-      run: |
-        git lfs track "*.iso"
-        git add custom.iso
-        git commit -m "Build custom ISO"
-        git push
-
-    - name: Install dotenv, requests, and Run Discord Notifier
-      run: |
-        pip install --no-use-pep517 python-dotenv requests
-        python .github/workflows/discord_notifier.py
-
-    - name: Create Release
-      id: create-release
-      run: |
-        release_name="Build"
-        release_tag="v$(date +'%Y%m%d%H%M%S')"
-        echo "RELEASE_NAME=$release_name" >> $GITHUB_ENV
-        echo "RELEASE_TAG=$release_tag" >> $GITHUB_ENV
-        git tag -a $release_tag -m "$release_name"
-        git push origin $release_tag
-
-  cleanup:
-    runs-on: ubuntu-latest
-    needs: build-iso
-
-    steps:
-    - name: Clean Up
-      run: |
-        sudo umount iso_mount
-        sudo rmdir iso_mount
-        rm -f custom.iso latest.iso
-
-    - name: Clean Up LFS
-      run: |
-        git lfs untrack "*.iso"
-        git rm --cached custom.iso latest.iso
-        git commit -m "Clean up"
-        git push
+    # Retry until the installation succeeds
+    until retry_install "${{ inputs.package_names }}"; do :; done
