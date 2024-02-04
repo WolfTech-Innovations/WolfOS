@@ -1,6 +1,7 @@
 # Welcome to SpoinkOS
 
 [![Codacy Security Scan](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/codacy.yml/badge.svg)](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/codacy.yml) [![ADPTG](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/ADPTG.yml/badge.svg)](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/ADPTG.yml)
+
 [SpoinkOS Discord Server](https://discord.gg/f7eT26K4D7)
 
 [Email me](mailto:SpoinkOSGithub@gmail.com)
