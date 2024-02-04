@@ -38,8 +38,7 @@ jobs:
 
     - name: Run Python Script to Check Internet Speed
       run: |
-        python3 .github/workflows/speedtest.py
-        
+        python3 /.github/workflows/speedtest.py/
     - name: Download Latest Release
       run: |
         echo "Downloading latest release..."
