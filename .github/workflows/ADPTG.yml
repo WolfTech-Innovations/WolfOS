@@ -1,4 +1,4 @@
-name: ADPTG (Archive Download Publish to GitHub)
+name: ADPTG
 
 on:
   workflow_dispatch:
