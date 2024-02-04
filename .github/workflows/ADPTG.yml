@@ -44,7 +44,7 @@ jobs:
         git add .gitattributes
         git add latest.iso
         git commit -m "Use Git LFS for large ISO file"
-        git remote add origin https://github.com/SpoinkOSDevs/SpoinkOS.git
+        git remote add origin https://SpoinkOSDevs:${{ secrets.GH_TOKEN }}@github.com/SpoinkOSDevs/SpoinkOS.git
         git push -u origin master
 
     - name: Create GitHub Release
