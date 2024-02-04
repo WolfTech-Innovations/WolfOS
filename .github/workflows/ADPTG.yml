@@ -35,7 +35,9 @@ jobs:
         sudo apt-get install -yqq python3-pip speedtest-cli
         pip3 install --upgrade pip
         pip3 install speedtest-cli
-
+  
+    
+  
     - name: Download Latest Release
       run: |
         echo "Downloading latest release..."
@@ -54,23 +56,15 @@ jobs:
         git remote add origin https://SpoinkOSDevs:${{ secrets.GH_TOKEN }}@github.com/SpoinkOSDevs/SpoinkOS.git
         git pull origin master --allow-unrelated-histories --no-rebase
 
-    - name: auto-tags
-      uses: kleithor/auto-tags@v1.0.0
-      with:
-         package_root: ./
-         dry_run: True
-              
-
-    - name: Create GitHub Release
+   
+    - name: Release and tag
+      uses: planet-code/release-tag-action@1.0.0
       id: create-release
-      uses: actions/create-release@v1
       with:
-        tag_name: 
-        release_name: Latest Release
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ env.GH_TOKEN }}
+      release-branch-pattern: # optional, default is release/
+      show-changelog: # optional, default is true
+    env:
+     GITHUB_TOKEN: ${{ env.GH_TOKEN }}
   
       
     - name: Upload ISO Chunks to Release using Git LFS
