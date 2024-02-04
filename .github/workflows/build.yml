@@ -11,6 +11,10 @@ jobs:
   build-iso:
     runs-on: ubuntu-latest
     steps:
+    - name: Optimize Internet Connection
+      run: |
+        echo "Optimizing internet connection..."
+        # Add commands to optimize the internet connection, if applicable
 
     - name: Setup Python
       uses: actions/setup-python@v2
@@ -23,7 +27,6 @@ jobs:
         sudo apt-get update -qq && sudo apt-get install -yqq genisoimage git-lfs wget
 
     - name: Download Previous ISO
-      id: download-previous
       run: |
         echo "Downloading previous ISO..."
         wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
@@ -98,6 +101,10 @@ jobs:
         git commit -m "Build custom ISO"
         git push
 
+    - name: Install dotenv, requests
+      run: |
+        echo "Installing dotenv and requests..."
+        pip install --no-use-pep517 python-dotenv requests
 
     - name: Create Release
       id: create-release
@@ -129,4 +136,3 @@ jobs:
         git rm --cached custom.iso latest.iso
         git commit -m "Clean up"
         git push
-      run: echo "LFS clean up completed."
