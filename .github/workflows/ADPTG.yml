@@ -1,4 +1,4 @@
-name: ADPTG
+name: ADPTG (Archive Download Publish to GitHub)
 
 on:
   workflow_dispatch:
@@ -38,12 +38,15 @@ jobs:
         echo "Downloading latest release..."
         wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
 
-    - name: Configure Git LFS for ISO file
+    - name: Split ISO into 3 Chunks
       run: |
-        git lfs track "*.iso"
-        git add .gitattributes
-        git add latest.iso
-        git commit -m "Use Git LFS for large ISO file"
+        split -b $(( $(stat --printf="%s" latest.iso) / 3 )) latest.iso latest_chunk
+
+    - name: Configure Git LFS for ISO chunks
+      run: |
+        git lfs track "*.iso*"
+        git add .gitattributes latest_chunk*
+        git commit -m "Use Git LFS for large ISO file chunks"
         git remote add origin https://SpoinkOSDevs:${{ secrets.GH_TOKEN }}@github.com/SpoinkOSDevs/SpoinkOS.git
         git push -u origin master
 
@@ -58,7 +61,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ env.GH_TOKEN }}
 
-    - name: Upload ISO to Release using Git LFS
+    - name: Upload ISO Chunks to Release using Git LFS
       id: upload-release-asset
       run: |
         git lfs fetch
@@ -73,4 +76,4 @@ jobs:
     - name: Clean Up
       run: |
         echo "Cleaning up..."
-        rm -f latest.iso
+        rm -f latest.iso latest_chunk*
