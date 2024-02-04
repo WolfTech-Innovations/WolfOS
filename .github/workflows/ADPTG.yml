@@ -37,7 +37,7 @@ jobs:
         pip3 install speedtest-cli
 
     - name: Run Python Script to Check Internet Speed
-       run: |
+      run: |
         python3 check_internet_archive.py
         
     - name: Download Latest Release
