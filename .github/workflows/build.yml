@@ -20,23 +20,27 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
+      run: echo "Python set up."
 
     - name: Install Required Tools
       run: |
         echo "Installing essential tools..."
         sudo apt-get update -qq && sudo apt-get install -yqq genisoimage git-lfs wget
+      run: echo "Essential tools installed."
 
     - name: Download Previous ISO
       id: download-previous
       run: |
         echo "Downloading previous ISO..."
         wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
+      run: echo "Previous ISO downloaded."
 
     - name: Unpack ISO
       run: |
         echo "Unpacking ISO..."
         sudo mkdir -p iso_mount
         sudo mount -o loop latest.iso iso_mount
+      run: echo "ISO unpacked."
 
     - name: Install Additional Packages
       id: install-packages
@@ -59,6 +63,7 @@ jobs:
         }
 
         until retry_install "${{ inputs.package_names }}"; do :; done
+      run: echo "Additional packages installed."
 
     - name: Run Code Scanning (shellcheck and codespell)
       run: |
@@ -68,6 +73,7 @@ jobs:
 
         sudo apt-get install -yqq codespell
         codespell --check-filenames --skip="*.iso" --fix
+      run: echo "Code scanning completed."
 
     - name: Automated Formatting with Prettier
       run: |
@@ -75,6 +81,7 @@ jobs:
         sudo apt-get install -yqq npm
         npm install -g prettier
         prettier --write .
+      run: echo "Code formatting completed."
 
     - name: Dependency Scanning with Snyk
       run: |
@@ -82,17 +89,20 @@ jobs:
         sudo apt-get install -yqq nodejs
         npm install -g snyk
         snyk test
+      run: echo "Dependency scanning completed."
 
     - name: Auto-fixing with codespell
       run: |
         echo "Auto-fixing with codespell..."
         pip install codespell
         codespell --check-filenames --skip="*.iso" --fix
+      run: echo "Auto-fixing completed."
 
     - name: Create ISO Image
       run: |
         echo "Creating ISO image..."
         sudo genisoimage -o custom.iso -r -J -no-emul-boot -boot-load-size 4 -boot-info-table -b isolinux/isolinux.bin -c isolinux/boot.cat -input-charset UTF-8 -V "Custom Ubuntu ISO" -quiet .
+      run: echo "ISO image created."
 
     - name: Move ISO to GitHub LFS
       run: |
@@ -101,12 +111,13 @@ jobs:
         git add custom.iso
         git commit -m "Build custom ISO"
         git push
+      run: echo "ISO moved to GitHub LFS."
 
-    - name: Install dotenv, requests, and Run Discord Notifier
+    - name: Install dotenv, requests
       run: |
-        echo "Installing dotenv, requests, and running Discord Notifier..."
+        echo "Installing dotenv and requests..."
         pip install --no-use-pep517 python-dotenv requests
-        python .github/workflows/discord_notifier.py
+      run: echo "Dependencies installed."
 
     - name: Create Release
       id: create-release
@@ -118,6 +129,7 @@ jobs:
         echo "RELEASE_TAG=$release_tag" >> $GITHUB_ENV
         git tag -a $release_tag -m "$release_name"
         git push origin $release_tag
+      run: echo "Release created."
 
   cleanup:
     runs-on: ubuntu-latest
@@ -130,6 +142,7 @@ jobs:
         sudo umount iso_mount
         sudo rmdir iso_mount
         rm -f custom.iso latest.iso
+      run: echo "Clean up completed."
 
     - name: Clean Up LFS
       run: |
@@ -138,3 +151,4 @@ jobs:
         git rm --cached custom.iso latest.iso
         git commit -m "Clean up"
         git push
+      run: echo "LFS clean up completed."
