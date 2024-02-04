@@ -1,4 +1,4 @@
-name: ADPTG
+name: ADPTG (Archive Download Publish to GitHub)
 
 on:
   workflow_dispatch:
@@ -35,8 +35,8 @@ jobs:
       id: create-release
       uses: actions/create-release@v1
       with:
-        tag_name: v$(date +'%Y%m%d%H%M%S')
-        release_name: Release $(date +'%Y%m%d%H%M%S')
+        tag_name: stable
+        release_name: Latest Release
         draft: false
         prerelease: false
       env:
