@@ -65,9 +65,10 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ env.GH_TOKEN }}
-
+  
+      
     - name: Upload ISO Chunks to Release using Git LFS
-      id: upload-release-asset
+      id: upload-release-assets
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create-release.outputs.upload_url }}
@@ -76,6 +77,21 @@ jobs:
         asset_content_type: application/octet-stream
       env:
         GITHUB_TOKEN: ${{ env.GH_TOKEN }}
+
+    - name: Upload more ISO Chunks if needed
+      run: |
+        for chunk in latest_chunkab latest_chunkac; do
+          git lfs fetch
+          git lfs push --all origin
+          git lfs pull
+          git lfs track "$chunk"
+          git add "$chunk"
+          git commit -m "Add $chunk"
+          git push -u origin master
+          git lfs push --all origin
+          git lfs pull
+          echo "::set-output name=asset_paths::${{ steps.upload-release-assets.outputs.asset_paths }},$chunk"
+        done
 
   cleanup:
     runs-on: ubuntu-latest
