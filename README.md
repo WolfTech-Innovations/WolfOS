@@ -18,6 +18,8 @@ PROJECT STATUS: ACTIVE
 
 RELEASE: STABLE
 
+ADPTG (Archive Download Publish to GitHub) - Set for cron job at midnight on Sunday UTC Time
+
 ## Overview:
 
 SpoinkOS is ubuntu but striped of bloatware so you can focus on what matters.
