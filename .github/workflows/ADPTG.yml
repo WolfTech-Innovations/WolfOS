@@ -1,4 +1,4 @@
-name: ADPTG
+name: ADPTG (Archive Download Publish to GitHub)
 
 on:
   workflow_dispatch:
@@ -32,20 +32,26 @@ jobs:
         wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
 
     - name: Create GitHub Release
+      id: create-release
       uses: actions/create-release@v1
       with:
+        token: ${{ env.GH_TOKEN }}
+        auth: ${{ secrets.GH_TOKEN }}  # Fallback to opts.auth if token is not provided
         tag_name: v$(date +'%Y%m%d%H%M%S')
         release_name: Release $(date +'%Y%m%d%H%M%S')
         draft: false
         prerelease: false
 
     - name: Upload ISO to Release
+      id: upload-release-asset
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create-release.outputs.upload_url }}
         asset_path: ./latest.iso
         asset_name: latest.iso
         asset_content_type: application/octet-stream
+        token: ${{ env.GH_TOKEN }}
+        auth: ${{ secrets.GH_TOKEN }}  # Fallback to opts.auth if token is not provided
 
   cleanup:
     runs-on: ubuntu-latest
