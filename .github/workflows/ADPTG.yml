@@ -1,4 +1,4 @@
-name: ADPTG
+name: ADPTG (Archive Download Publish to GitHub)
 
 on:
   workflow_dispatch:
@@ -35,12 +35,12 @@ jobs:
       id: create-release
       uses: actions/create-release@v1
       with:
-        token: ${{ env.GH_TOKEN }}
-        auth: ${{ secrets.GH_TOKEN }}  # Fallback to opts.auth if token is not provided
         tag_name: v$(date +'%Y%m%d%H%M%S')
         release_name: Release $(date +'%Y%m%d%H%M%S')
         draft: false
         prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ env.GH_TOKEN }}
 
     - name: Upload ISO to Release
       id: upload-release-asset
@@ -50,8 +50,8 @@ jobs:
         asset_path: ./latest.iso
         asset_name: latest.iso
         asset_content_type: application/octet-stream
-        token: ${{ env.GH_TOKEN }}
-        auth: ${{ secrets.GH_TOKEN }}  # Fallback to opts.auth if token is not provided
+      env:
+        GITHUB_TOKEN: ${{ env.GH_TOKEN }}
 
   cleanup:
     runs-on: ubuntu-latest
