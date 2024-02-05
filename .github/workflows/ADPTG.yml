@@ -25,7 +25,7 @@ jobs:
     - name: Download Latest Release
       run: |
         echo "Downloading latest release..."
-        latest_url=$(wget -q -O - "https://archive.org/download/spoink-os/" | grep -Eo 'href="[^\"]+\.iso"' | sed 's/href="//;s/"//' | tail -n 1); wget -N --timestamping "https://archive.org/download/spoink-os/$latest_url" -O "$latest_url"
+        latest_url=$(wget -q -O - "https://archive.org/download/spoink-os/" | grep -Eo 'href="[^\"]+\.iso"' | sed 's/href="//;s/"//' | awk -F'[_.]' '{print $3$4" "$0}' | sort -k1,1nr -k2,2nr | cut -d' ' -f2- | head -n 1); wget -N --timestamping "https://archive.org/download/spoink-os/$latest_url" -O "latest.iso"
 
     - name: Split ISO into 3 Chunks
       run: |
