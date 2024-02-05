@@ -33,6 +33,7 @@ jobs:
 
     - name: Configure Git LFS for ISO chunks
       run: |
+        git config pull.rebase false
         git lfs track "*.iso*"
         git add .gitattributes latest_chunk*
         git commit -m "Use Git LFS for large ISO file chunks"
