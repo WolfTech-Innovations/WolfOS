@@ -38,7 +38,7 @@ jobs:
         git lfs track "*.iso*"
         git add .gitattributes latest_chunk*
         git commit -m "Use Git LFS for large ISO file chunks"
-        git remote set-url origin https://username:${env.GH_TOKEN}@github.com/SpoinkOSDevs/SpoinkOS.git
+        git remote set-url origin https://username:${GH_TOKEN}@github.com/SpoinkOSDevs/SpoinkOS.git
         git pull origin master --allow-unrelated-histories
         git push -u origin master
 
