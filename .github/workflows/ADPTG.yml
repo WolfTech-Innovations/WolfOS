@@ -25,7 +25,7 @@ jobs:
     - name: Download Latest Release
       run: |
         echo "Downloading latest release..."
-        wget -N --timestamping "https://archive.org/download/spoink-os/*.iso" -O latest.iso
+        for url in $(wget -q -O - "https://archive.org/download/spoink-os/" | grep -Eo 'href="[^\"]+\.iso"' | sed 's/href="//;s/"//'); do wget -N --timestamping "https://archive.org/download/spoink-os/$url" -O "$url"; done
 
     - name: Split ISO into 3 Chunks
       run: |
