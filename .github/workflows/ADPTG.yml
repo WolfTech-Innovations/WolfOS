@@ -61,20 +61,20 @@ jobs:
       uses: planet-code/release-tag-action@1.0.0
       id: create-release
       with:
-      release-branch-pattern: # optional, default is release/
-      show-changelog: # optional, default is true
+      release-branch-pattern: release/
+      show-changelog: False
     env:
      GITHUB_TOKEN: ${{ env.GH_TOKEN }}
+
   
-      
-    - name: Upload ISO Chunks to Release using Git LFS
-      id: upload-release-assets
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: latest_chunkaa
-        asset_name: latest_chunkaa
-        asset_content_type: application/octet-stream
+    - name: Upload Artifacts
+    id: upload-release-assets
+    uses: actions/upload-release-asset@v1
+       with:
+         upload_url: ${{ steps.create-release.outputs.upload_url }}
+         asset_path: latest_chunkaa
+         asset_name: latest_chunkaa
+         asset_content_type: application/octet-stream
       env:
         GITHUB_TOKEN: ${{ env.GH_TOKEN }}
 
