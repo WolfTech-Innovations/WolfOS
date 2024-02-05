@@ -22,26 +22,10 @@ jobs:
         git config user.name "SpoinkOSDevs"
         git config user.email "SpoinkOSGithub@gmail.com"
 
-    - name: Setup Python and Git LFS
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-
-    - name: Install Required Tools
-      run: |
-        echo "Installing essential tools..."
-        sudo apt-get update -qq && sudo apt-get install -yqq git-lfs 
-        git lfs install
-        sudo apt-get install -yqq python3-pip speedtest-cli
-        pip3 install --upgrade pip
-        pip3 install speedtest-cli
-  
-    
-  
     - name: Download Latest Release
       run: |
         echo "Downloading latest release..."
-        wget -N --timestamping https://archive.org/download/spoink-os/SpoinkOS-Latest-desktop-amd64.iso -O latest.iso
+        wget -N --timestamping https://archive.org/download/spoink-os/*.iso -O latest.iso
 
     - name: Split ISO into 3 Chunks
       run: |
@@ -49,32 +33,32 @@ jobs:
 
     - name: Configure Git LFS for ISO chunks
       run: |
-        git config pull.rebase false
         git lfs track "*.iso*"
         git add .gitattributes latest_chunk*
         git commit -m "Use Git LFS for large ISO file chunks"
-        git remote add origin https://SpoinkOSDevs:${{ secrets.GH_TOKEN }}@github.com/SpoinkOSDevs/SpoinkOS.git
-        git pull origin master --allow-unrelated-histories --no-rebase
+        git remote add origin https://github.com/SpoinkOSDevs/SpoinkOS
+        git pull origin master --allow-unrelated-histories
+        git push -u origin master
 
-   
-    - name: Release and tag
-      uses: planet-code/release-tag-action@1.0.0
+    - name: Create GitHub Release
       id: create-release
+      uses: actions/create-release@v1
       with:
-      release-branch-pattern: release/
-      show-changelog: False
-    env:
-     GITHUB_TOKEN: ${{ env.GH_TOKEN }}
+        tag_name: v$(date +'%Y%m%d%H%M%S')-$(openssl rand -hex 4)  # Use a random string
+        release_name: Release $(date +'%Y%m%d%H%M%S')
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ env.GH_TOKEN }}
 
-  
-    - name: Upload Artifacts
-    id: upload-release-assets
-    uses: actions/upload-release-asset@v1
-       with:
-         upload_url: ${{ steps.create-release.outputs.upload_url }}
-         asset_path: latest_chunkaa
-         asset_name: latest_chunkaa
-         asset_content_type: application/octet-stream
+    - name: Upload ISO Chunks to Release using Git LFS
+      id: upload-release-assets
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: latest_chunkaa
+        asset_name: latest_chunkaa
+        asset_content_type: application/octet-stream
       env:
         GITHUB_TOKEN: ${{ env.GH_TOKEN }}
 
