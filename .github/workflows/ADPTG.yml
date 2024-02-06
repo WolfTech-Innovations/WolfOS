@@ -36,7 +36,6 @@ jobs:
       run: |
         git remote add origin git@github.com:SpoinkOSDevs/SpoinkOS.git
         git config pull.rebase false
-        git checkout -b master origin/master
         git lfs track "chunk*"
         git lfs track "iso*"
         git add .gitattributes latest_chunk*
