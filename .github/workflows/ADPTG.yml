@@ -32,14 +32,11 @@ jobs:
         split -b $(( $(stat --printf="%s" latest.iso) / 3 )) latest.iso latest_chunk
 
 
-    - name: Checkout Branch
-      run: |
-       git checkout -b master origin/master
-
     - name: Configure Git LFS for ISO chunks
       run: |
         git remote add origin git@github.com:SpoinkOSDevs/SpoinkOS.git
         git config pull.rebase false
+        git checkout -b master origin/master
         git lfs track "chunk*"
         git lfs track "iso*"
         git add .gitattributes latest_chunk*
