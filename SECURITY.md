@@ -2,4 +2,4 @@
 
 ## Issue Reporting:
 
-To Report an Issue go to https://SpoinkOSDevs/SpoinkOS/Bug-Hunting.md
+To Report an Issue go to https://github.com/SpoinkOSDevs/SpoinkOS/Bug-Hunting.md
