@@ -1,6 +1,6 @@
-# Welcome to SpoinkOS
+# Ahoy there! ⚓️
 
-[![Codacy Security Scan](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/codacy.yml/badge.svg)](https://github.com/SpoinkOSDevs/SpoinkOS/actions/workflows/codacy.yml)
+![Logo](https://github.com/SpoinkOSDevs/SpoinkOS/blob/master/logo.png)
 
 [SpoinkOS Discord Server](https://discord.gg/f7eT26K4D7)
 
