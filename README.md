@@ -36,6 +36,7 @@ To install SpoinkOS, follow these steps:
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install SpoinkOS.
+5. (For Developers) To make a NixOS-Like deployment system, first install the OS on hardware or a VM then use CLCTool to execute the deployment / config scripts you have wrote; More info at [CLCTool](https://github.com/SpoinkOSDevs/CLCTool)
 
 ## Conclusion:
 
