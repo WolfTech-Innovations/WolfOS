@@ -1,4 +1,4 @@
-# Ahoy there! ⚓️
+# Hi there!
 
 ![Logo](https://github.com/SpoinkOSDevs/SpoinkOS/blob/master/logo.png)
 
