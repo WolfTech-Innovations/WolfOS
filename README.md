@@ -14,10 +14,6 @@
 
 [Fourms](https://spoinkos.boards.net/)
 
-PROJECT STATUS: ACTIVE
-
-RELEASE: STABLE
-
 ## Overview:
 
 SpoinkOS is ubuntu but striped of bloatware so you can focus on what matters.
