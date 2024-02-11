@@ -1,6 +1,4 @@
-# Hi there!
-
-![Logo](https://github.com/SpoinkOSDevs/SpoinkOS/blob/master/logo.png)
+# SpoinkOS
 
 [SpoinkOS Discord Server](https://discord.gg/f7eT26K4D7)
 
@@ -16,13 +14,7 @@
 
 ## Overview:
 
-SpoinkOS is ubuntu but striped of bloatware so you can focus on what matters.
-
-## Features
-
-- **User-Friendly Interface**: Our distro comes with a clean and intuitive desktop environment called GNOME that makes it easy to use, even for newcomers.
-
-- **Based On Ubuntu**
+We and our SpoinkOS ecosystem allows developers to thrive by being able to write NixOS-Like config to install all the packages you need with a single config file after installing the OS. Updates? No problem! You can just specify packages for install in the config so you can set the kernel version you want, easy as that.
 
 ## Installation:
 
