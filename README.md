@@ -40,7 +40,7 @@ Happy computing!
 
 ## Concept:
 
-SpoinkOS belives that where ever you go you have to spring or "Spoink" into action like a spring! So We came up with the name "SpoinkOS".
+The name "SpoinkOS" is inspired by a Pokémon character called Spoink. In the Pokémon series, Spoink is a Psychic-type Pokémon known for constantly bouncing on its spring-like tail. The name "SpoinkOS" reflects the playful and energetic nature of the Pokémon character, and it adds a unique and memorable touch to the Linux distribution. Just like the Pokémon Spoink, which is known for its resilience and determination, SpoinkOS aims to provide a robust and resilient computing experience for its users.
 
 ## Pronouced: 
 
