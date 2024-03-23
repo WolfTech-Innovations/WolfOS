@@ -36,7 +36,7 @@ Happy computing!
 
 -- Carl - Head of SpoinkOS Development Team
 
--- Meco - Head Manager Of SpoinkOS Development Team
+-- Meco - Head Manager Of SpoinkOS Marketing Team
 
 ## Concept:
 
