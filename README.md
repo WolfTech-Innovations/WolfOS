@@ -10,6 +10,8 @@
 
 [Fourms](https://spoinkos.boards.net/)
 
+[Discord](https://discord.gg/f7eT26K4D7)
+
 ## Overview:
 
 We and our SpoinkOS ecosystem allows developers to thrive by being able to write NixOS-Like config to install all the packages you need with a single config file after installing the OS. Updates? No problem! You can just specify packages for install in the config so you can set the kernel version you want, its just as easy as that.
