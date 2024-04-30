@@ -1,5 +1,5 @@
 # SpoinkOS
-
+# Next Update: Predicted, 5/8/2024
 [Email me](mailto:SpoinkOSGithub@gmail.com)
 
 [Internet Archive](https://archive.org/details/spoink-os)
