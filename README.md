@@ -52,6 +52,10 @@ The name "SpoinkOS" is inspired by a Pokémon character called Spoink. In the Po
 
 SpoinkOS is copyleft, SpoinkOS, has no parent company and is owned by a person / person(s) in this sense as though the name is not copyrighted, we have no affilation with Nintendo or Pokemon related products or services as though this is entirely diffrent.
 
+## Star History
+
+![Alt](https://star-history.com/#SpoinkOSDevs/SpoinkOS&Date "Star History")
+
 ## Github Repo Data:
 
 
