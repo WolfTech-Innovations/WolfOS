@@ -54,7 +54,7 @@ SpoinkOS is copyleft, SpoinkOS, has no parent company and is owned by a person /
 
 ## Star History
 
-![Alt](https://star-history.com/#SpoinkOSDevs/SpoinkOS&Date "Star History")
+[![Star History Chart](https://api.star-history.com/svg?repos=SpoinkOSDevs/SpoinkOS&type=Date)](https://star-history.com/#SpoinkOSDevs/SpoinkOS&Date)
 
 ## Github Repo Data:
 
