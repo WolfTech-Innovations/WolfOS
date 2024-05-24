@@ -1,6 +1,6 @@
 # Welcome to SpoinkOS . . .
 
-# Latest Release: Leafy Green
+# Latest Release: Cherry Blush
 
 [Email me](mailto:SpoinkOSGithub@gmail.com)
 
