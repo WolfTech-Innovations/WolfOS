@@ -42,8 +42,6 @@ Happy computing!
 
 -- Carl - Head of SpoinkOS Development Team
 
--- Meco - Head Manager Of SpoinkOS Marketing Team
-
 ## Concept:
 
 The name "SpoinkOS" is inspired by a Pokémon character called Spoink. In the Pokémon series, Spoink is a Psychic-type Pokémon known for constantly bouncing on its spring-like tail. The name "SpoinkOS" reflects the playful and energetic nature of the Pokémon character, and it adds a unique and memorable touch to the Linux distribution. Just like the Pokémon Spoink, which is known for its resilience and determination, SpoinkOS aims to provide a robust and resilient computing experience for its users.
@@ -55,12 +53,3 @@ The name "SpoinkOS" is inspired by a Pokémon character called Spoink. In the Po
 ## Legal Stuff:
 
 SpoinkOS is copyleft, SpoinkOS, has no parent company and is owned by a person / person(s) in this sense as though the name is not copyrighted, we have no affilation with Nintendo or Pokemon related products or services as though this is entirely diffrent.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=SpoinkOSDevs/SpoinkOS&type=Date)](https://star-history.com/#SpoinkOSDevs/SpoinkOS&Date)
-
-## Github Repo Data:
-
-
-![Alt](https://repobeats.axiom.co/api/embed/9e173f4107ed537ec0ce258aff3280003b3e319f.svg "Repobeats analytics image")
