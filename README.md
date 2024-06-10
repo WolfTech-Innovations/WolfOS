@@ -14,7 +14,7 @@
 
 [Discord](https://discord.gg/f7eT26K4D7)
 
-[Web Hosting](spoinkstore.duoservers.com)
+[Web Hosting](https://spoinkstore.duoservers.com)
 
 ## Overview:
 
