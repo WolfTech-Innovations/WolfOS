@@ -27,7 +27,7 @@ jobs:
       #  1. See the following link for information about the tools that need to be installed for Frogbot to work - https://github.com/jfrog/frogbot/tree/master/docs/templates/github-actions/scan-and-fix
       #  2. Some projects require creating a frogbot-config.yml file. Read more about it here - https://github.com/jfrog/frogbot/blob/master/docs/frogbot-config.md
 
-      - uses: jfrog/frogbot@54d0cfedebdb11ded3af3069fd3c69ab6727509d  # v2.20.2
+      - uses: jfrog/frogbot@5d9c42c30f1169d8be4ba5510b40e75ffcbbc2a9  # v2.21.2
         env:
           # [Mandatory if the two conditions below are met]
           # 1. The project uses npm, yarn 2, NuGet or .NET to download its dependencies
