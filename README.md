@@ -2,7 +2,11 @@
 
 # Latest Release: Cherry Blush
 
-[Email me](mailto:SpoinkOSGithub@gmail.com)
+[Email me](mailto:supportdesk@spoinkstore.great-site.net)
+
+[Secondary Email](mailto:spoinkosgithub@gmail.com)
+
+Support Number: 1-417-279-4173
 
 [Internet Archive](https://archive.org/details/spoink-os)
 
