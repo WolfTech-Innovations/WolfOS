@@ -2,6 +2,8 @@
 
 # Latest Release: Cherry Blush
 
+[Web Hosting](https://spoinkstore.duoservers.com)
+
 [Email me](mailto:supportdesk@spoinkstore.great-site.net)
 
 [Secondary Email](mailto:spoinkosgithub@gmail.com)
@@ -18,7 +20,6 @@ Support Number: 1-417-279-4173
 
 [Discord](https://discord.gg/f7eT26K4D7)
 
-[Web Hosting](https://spoinkstore.duoservers.com)
 
 ## Overview:
 
