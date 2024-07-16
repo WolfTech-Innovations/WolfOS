@@ -4,9 +4,9 @@
 
 [Web Hosting](https://spoinkstore.duoservers.com)
 
-[Email me](mailto:supportdesk@spoinkstore.great-site.net)
+[Email me](mailto:supportdesk@spoinkstore.great-site.net) --Support--
 
-[Secondary Email](mailto:spoinkosgithub@gmail.com)
+[Secondary Email](mailto:spoinkosgithub@gmail.com) --Ideas or Other Non-tech Questions--
 
 Support Number: 1-417-279-4173
 
