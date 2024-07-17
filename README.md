@@ -1,6 +1,6 @@
 # Welcome to SpoinkOS . . .
 
-# Latest Release: Cherry Blush
+# Latest Release: Blueberry Split
 
 [![Download SpoinkOS](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/spoinkos/files/latest/download)
 
