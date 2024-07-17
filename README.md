@@ -2,6 +2,10 @@
 
 # Latest Release: Cherry Blush
 
+[![Download SpoinkOS](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/spoinkos/files/latest/download)
+
+[![Download SpoinkOS](https://img.shields.io/sourceforge/dt/spoinkos.svg)](https://sourceforge.net/projects/spoinkos/files/latest/download)
+
 [Web Hosting](https://spoinkstore.duoservers.com)
 
 [Email me](mailto:supportdesk@spoinkstore.great-site.net) --Support--
@@ -10,7 +14,7 @@
 
 Support Number: 1-417-279-4173
 
-[Internet Archive](https://archive.org/details/spoink-os)
+[Old Release Archive](https://archive.org/details/spoink-os)
 
 [Torrent](https://archive.org/download/spoink-os/spoink-os_archive.torrent)
 
