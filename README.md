@@ -33,7 +33,7 @@ We and our SpoinkOS ecosystem allows developers to thrive by being able to write
 
 To install SpoinkOS, follow these steps:
 
-1. [Download the ISO image](https://archive.org/details/spoink-os) from the Internet Archive mirrior.
+1. Download the ISO from the Sourceforge Mirror.
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install SpoinkOS.
