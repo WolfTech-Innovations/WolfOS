@@ -1,6 +1,6 @@
 # Welcome to SpoinkOS . . .
 
-# Latest Release: Bitter Butterscotch (Based on Linux Lite)
+# Latest Release: Carmel Apple (Based on Linux Lite) (Releasing soon)
 
 [![Download SpoinkOS](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/spoinkos/files/latest/download)
 
