@@ -1,6 +1,6 @@
 # Welcome to SpoinkOS . . .
 
-# Latest Release: Blueberry Split
+# Latest Release: Bitter Butterschotch
 
 [![Download SpoinkOS](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/spoinkos/files/latest/download)
 
