@@ -16,8 +16,6 @@ Support Number: 1-417-279-4173
 
 [Old Release Archive](https://archive.org/details/spoink-os)
 
-[Torrent](https://archive.org/download/spoink-os/spoink-os_archive.torrent)
-
 [SpoinkOS Website (Hosted by cloudflare)](https://spoink.pages.dev/)
 
 [Fourms](https://spoinkos.boards.net/)
