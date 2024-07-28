@@ -6,11 +6,9 @@
 
 [![Download SpoinkOS](https://img.shields.io/sourceforge/dt/spoinkos.svg)](https://sourceforge.net/projects/spoinkos/files/latest/download)
 
-[Web Hosting](https://spoinkstore.duoservers.com)
+[SpoinkOS Web Hosting](https://spoinkstore.duoservers.com)
 
-[Email me](mailto:supportdesk@spoinkstore.great-site.net) --Support--
-
-[Secondary Email](mailto:spoinkosgithub@gmail.com) --Ideas or Other Non-tech Questions--
+[Email Me](mailto:spoinkosgithub@gmail.com)
 
 Support Number: 1-417-279-4173
 
