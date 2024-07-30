@@ -45,7 +45,7 @@ Happy computing!
 
 ## Our Team
 
--- Carl - Head of SpoinkOS Development Team
+-- Chris F. - Head of SpoinkOS Development Team
 
 ## Concept:
 
