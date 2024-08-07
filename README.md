@@ -57,4 +57,4 @@ The name "SpoinkOS" is inspired by a Pokémon character called Spoink. In the Po
 
 ## Legal Stuff:
 
-SpoinkOS is Public Domain and is managed by SpoinkOS Innovations, we have no affilation with Nintendo™ or Pokemon™ related products or services
+SpoinkOS is GPL Licensed and is managed by SpoinkOS Innovations, we have no affilation with Nintendo™ or Pokemon™ related products or services
