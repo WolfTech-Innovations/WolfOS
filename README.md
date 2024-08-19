@@ -6,8 +6,6 @@
 
 [![Download SpoinkOS](https://img.shields.io/sourceforge/dt/spoinkos.svg)](https://sourceforge.net/projects/spoinkos/files/latest/download)
 
-[SpoinkOS Web Hosting](https://spoinkstore.duoservers.com)
-
 [Email Me](mailto:spoinkosgithub@gmail.com)
 
 Support Number: 1-417-279-4173
