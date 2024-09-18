@@ -4,7 +4,7 @@
 
 ![TechFox Banner](https://github.com/TechFox-Innovations/FoxOS/TechFox1.png)
 
-[Email Me](mailto:techfox@gmail.com)
+[Email Me](mailto:techfoxinnovations@gmail.com)
 
 Support Number: 1-417-279-4173
 
