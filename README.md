@@ -2,7 +2,7 @@
 
 # Latest Release: Horizon (Based on Linux Lite)
 
-![TechFox Banner](https://github.com/TechFox-Innovations/FoxOS/TechFox1.png)
+![TechFox Banner](https://github.com/TechFox-Innovations/FoxOS/blob/master/TechFox2.png)
 
 [Email Me](mailto:techfoxinnovations@gmail.com)
 
