@@ -36,4 +36,4 @@ Happy computing!
 
 ## Legal Stuff:
 
-FoxOS is GPL Licensed and is managed by FoxOS Innovations.
+FoxOS is GPL Licensed and is managed by TechFox Innovations. (We have no corrolation or affilation with TechFox IT Services LLC)
