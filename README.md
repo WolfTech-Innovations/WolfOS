@@ -1,6 +1,6 @@
 # Welcome to FoxOS! 🦊
 
-# Latest Release: Horizon (Based on Linux Lite)
+# Latest Release: Blue Cherry (Based on Zorin OS)
 
 ![TechFox Banner](https://github.com/TechFox-Innovations/FoxOS/blob/master/TechFox2.png)
 
