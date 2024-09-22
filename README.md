@@ -1,4 +1,4 @@
-# Welcome to WolfOS! 🦊
+# Welcome to WolfOS! 🐺:
 
 # Latest Release: Blue Cherry (Based on Zorin OS)
 
