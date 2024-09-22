@@ -2,7 +2,7 @@
 
 # Latest Release: Blue Cherry (Based on Zorin OS)
 
-![TechFox Banner](https://github.com/WolfTech-Innovations/WolfOS/blob/master/WolfTech.png)
+![WolfTech Banner](https://github.com/WolfTech-Innovations/WolfOS/blob/master/WolfTech.png)
 
 Support Number: 1-417-279-4173
 
