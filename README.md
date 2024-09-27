@@ -1,6 +1,6 @@
 # Welcome to WolfOS! 🐺:
 
-# Latest Release: Playful Puppy (Soon) (Based on Zorin OS)
+# Latest Release: Playful Puppy (Based on Zorin OS)
 
 ![WolfTech Banner](https://github.com/WolfTech-Innovations/WolfOS/blob/master/WolfTech.png)
 
