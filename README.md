@@ -34,4 +34,4 @@ Happy computing!
 
 ## Legal Stuff:
 
-WolfOS is GPL Licensed and is managed by TechFox Innovations. (We have no corrolation or affilation with TechFox IT Services LLC)
+WolfOS is GPL Licensed and is managed by WolfTech Innovations
