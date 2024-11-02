@@ -35,3 +35,5 @@ Happy computing!
 ## Legal Stuff:
 
 WolfOS is GPL Licensed and is managed by WolfTech Innovations
+
+[![Copyrighted.com Registered & Protected](https://static.copyrighted.com/badges/125x75/04.png)](https://app.copyrighted.com/work/GW0cSbajaE2ZDg9X "Copyrighted.com Registered & Protected")
