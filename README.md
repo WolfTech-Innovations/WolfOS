@@ -1,10 +1,6 @@
 # Welcome to WolfOS! 🐺:
 
-# Latest Release: Playful Puppy (Based on Zorin OS)
-
-![WolfTech Banner](https://github.com/WolfTech-Innovations/WolfOS/blob/master/WolfTech.png)
-Discord: https://discord.gg/jzF2JeAKdW
-Support Number: 1-417-279-4173
+# Latest Release: Sticky Syrup (KDE)
 
 ## Overview:
 
