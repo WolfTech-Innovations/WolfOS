@@ -1,3 +1,4 @@
+[![Build WolfOS ISO](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml/badge.svg)](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml)
 # Welcome to WolfOS! 🐺:
 
 # Latest Release: Sticky Syrup (KDE)
