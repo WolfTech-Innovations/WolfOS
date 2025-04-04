@@ -22,13 +22,13 @@ jobs:
           echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
           su builder -c "git clone https://aur.archlinux.org/yay.git /home/builder/yay"
           su builder -c "cd /home/builder/yay && makepkg -si --noconfirm"
-     
-      - name: Install Calamares from AUR
+    
+      - name: Install ckbcomp from AUR
         run: su builder -c "yay -S --noconfirm ckbcomp"
+      - name: Install mkinitcpio-openswap from AUR
         run: su builder -c "yay -S --noconfirm mkinitcpio-openswap"
+      - name: Install Calamares from AUR
         run: su builder -c "yay -S --noconfirm calamares"
-
-
 
       - name: Checkout
         uses: actions/checkout@v4
