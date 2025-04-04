@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm archiso git base-devel plasma sddm python python-pip ckbcomp efibootmgr gtk-update-icon-cache hwinfo kpmcore>=24.01.75 libpwquality  mkinitcpio-openswap yaml-cpp
+          pacman -S --noconfirm archiso git base-devel plasma sddm python python-pip efibootmgr gtk-update-icon-cache hwinfo kpmcore>=24.01.75 libpwquality  mkinitcpio-openswap yaml-cpp
 
       - name: Install yay (AUR helper)
         run: |
@@ -24,6 +24,8 @@ jobs:
           su builder -c "cd /home/builder/yay && makepkg -si --noconfirm"
      
       - name: Install Calamares from AUR
+        run: su builder -c "yay -S --noconfirm ckbcomp"
+        run: su builder -c "yay -S --noconfirm mkinitcpio-openswap"
         run: su builder -c "yay -S --noconfirm calamares"
 
 
