@@ -89,7 +89,7 @@ chmod +x "$PROFILE_DIR/$FASTFETCH_DIR/fastfetch"
 
 # === Zsh Setup ===
 echo "[*] Configuring Zsh as the default shell..."
-mkdir -p "$PROFILE_DIR/airootfs/root/.zshrc"
+touch "$PROFILE_DIR/airootfs/root/.zshrc"
 cat << 'EOF' > "$PROFILE_DIR/airootfs/root/.zshrc"
 # Custom Zsh Config
 autoload -Uz promptinit
