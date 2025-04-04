@@ -67,7 +67,13 @@ echo "/root/install_clctool.sh" > "$PROFILE_DIR/$BASH_PROFILE"
 # === User Creation and Setup ===
 echo "[*] Creating Live User..."
 useradd -m -G wheel -s /bin/zsh $USER
+
+# Ensure the sudoers directory exists before adding the file
+mkdir -p "$PROFILE_DIR/airootfs/etc/sudoers.d"
+
+# Allow 'live' user to run sudo without a password prompt
 echo "$USER ALL=(ALL) NOPASSWD: ALL" > "$PROFILE_DIR/airootfs/etc/sudoers.d/$USER"
+
 
 # === Fastfetch Setup ===
 echo "[*] Installing Fastfetch for system info..."
