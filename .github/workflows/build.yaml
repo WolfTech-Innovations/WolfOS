@@ -13,7 +13,7 @@ jobs:
       - name: Install dependencies
         run: |
           pacman -Syu --noconfirm
-          pacman -S --noconfirm archiso git base-devel plasma sddm python python-pip
+          pacman -S --noconfirm archiso git base-devel plasma sddm python python-pip ckbcomp efibootmgr gtk-update-icon-cache hwinfo kpmcore>=24.01.75 libpwquality  mkinitcpio-openswap yaml-cpp
 
       - name: Install yay (AUR helper)
         run: |
