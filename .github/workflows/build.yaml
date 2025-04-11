@@ -45,15 +45,9 @@ jobs:
 
       - name: Sync Source Code
         run: |
-          repo init -u git://gitscm.sf.net/gitroot/android-x86/manifest -b pie-x86
+          repo init -u https://gitscm.sf.net/gitroot/android-x86/manifest.git -b pie-x86
           repo sync -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
-
-      - name: Apply Performance Tweaks
-        run: |
-          echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
-          echo 'vm.vfs_cache_pressure=50' | sudo tee -a /etc/sysctl.conf
-          echo 'kernel.sched_migration_cost_ns=5000000' | sudo tee -a /etc/sysctl.conf
-
+          
       - name: Lunch Configuration
         run: |
           source build/envsetup.sh
