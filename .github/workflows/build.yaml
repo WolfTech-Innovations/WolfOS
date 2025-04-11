@@ -22,11 +22,11 @@ jobs:
           chmod +x repo
           sudo mv repo /usr/local/bin/repo
 
-      - name: Sync Android-x86 CM source
+      - name: Sync Android-x86 source
         run: |
           git config --global user.email "spoinkosgithub@gmail.com"
           git config --global user.name "WolfTech-Innovations"
-          repo init -u https://github.com/android-x86/cm-x86-manifest.git -b cm-14.1-x86
+          repo init -u https://github.com/android-x86/manifest.git -b pie-x86
           repo sync -j$(nproc) --force-sync
 
       - name: Apply WolfOS branding and tweaks
