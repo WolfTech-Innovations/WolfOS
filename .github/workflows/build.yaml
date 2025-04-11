@@ -26,7 +26,7 @@ jobs:
         run: |
           git config --global user.email "spoinkosgithub@gmail.com"
           git config --global user.name "WolfTech-Innovations"
-          repo init -u git://git.osdn.net/gitroot/android-x86/manifest -b pie-x86
+          repo init -u git://scm.osdn.net/gitroot/android-x86/manifest -b pie-x86
           repo sync -j$(nproc) --force-sync --prune --optimize-fetch
 
       - name: Apply WolfOS branding and tweaks
