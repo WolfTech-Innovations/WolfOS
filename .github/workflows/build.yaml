@@ -45,7 +45,7 @@ jobs:
 
       - name: Sync Source Code
         run: |
-          repo init -u https://gitscm.sf.net/gitroot/android-x86/manifest.git -b pie-x86
+          repo init -u https://github.com/BlissRoms-x86/manifest -b arcadia-x86 --git-lfs
           repo sync -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
           
       - name: Lunch Configuration
