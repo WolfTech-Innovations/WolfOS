@@ -4,108 +4,82 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-matrix:
+    name: Build WolfOS (Matrix)
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        architecture: [x86_64, arm64]
+        variant: [user, userdebug, eng]
+        include:
+          - architecture: x86_64
+            variant: userdebug
+          - architecture: arm64
+            variant: eng
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Install Packages
+      - name: Install Required Tools and Dependencies
         run: |
           sudo apt update
-          sudo apt install -y git bc bison build-essential curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev lib32z1-dev libc6-dev-i386 libgl1-mesa-dev libncurses6 libncurses-dev libssl-dev libx11-dev libxml2-utils lzop openjdk-11-jdk pngcrush rsync schedtool squashfs-tools xsltproc zip zlib1g-dev wget python3 python3-pip
+          sudo apt install -y git bc bison build-essential curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev lib32z1-dev libc6-dev-i386 libgl1-mesa-dev
 
-      - name: Install repo tool
+      - name: Install Repo Tool
         run: |
           curl https://storage.googleapis.com/git-repo-downloads/repo -o repo
           chmod +x repo
           sudo mv repo /usr/local/bin/repo
 
-      - name: Sync Android-x86 source
+      - name: Restore Cache (Incremental Builds)
+        id: cache-restore
+        uses: actions/cache@v3
+        with:
+          path: |
+            .repo
+            out/
+            ccache/
+          key: build-${{ matrix.architecture }}-${{ matrix.variant }}
+          restore-keys: |
+            build-${{ matrix.architecture }}-
+
+      - name: Sync Source Code
         run: |
-          git config --global user.email "spoinkosgithub@gmail.com"
-          git config --global user.name "WolfTech-Innovations"
           repo init -u git://gitscm.sf.net/gitroot/android-x86/manifest -b pie-x86
           repo sync -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
 
-      - name: Apply WolfOS branding and tweaks
+      - name: Apply Performance Tweaks
         run: |
-          find . -type f -exec sed -i 's/Android-x86/WolfOS/g' {} + || true
-          find . -type f -exec sed -i 's/About tablet/About WolfOS/g' {} + || true
-
-      - name: Add FydeOS style UI and Lawnchair
-        run: |
-          git clone https://github.com/LawnchairLauncher/lawnchair.git vendor/lawnchair
-          git clone https://github.com/FydeOS/fydeos-ui.git vendor/fydeos-ui
-          cp -r vendor/fydeos-ui/overlay/* vendor/cm/overlay/
-
-      - name: Enable Crostini support
-        run: |
-          echo "CONFIG_LXC=y" >> kernel/arch/x86/configs/x86_64_defconfig
-          echo "CONFIG_NAMESPACES=y" >> kernel/arch/x86/configs/x86_64_defconfig
-          echo "CONFIG_USER_NS=y" >> kernel/arch/x86/configs/x86_64_defconfig
-
-      - name: Set Chrome homepage
-        run: |
-          sed -i 's|"homepage": ".*"|"homepage": "https://wolfos.pages.dev"|g' external/chromium-webview/src/java/org/chromium/webview_shell/WebViewBrowserActivity.java || true
-
-      - name: Download custom boot animation
-        run: |
-          mkdir -p vendor/bootanimation
-          wget -O vendor/bootanimation/bootanimation.zip https://xdaforums.com/attachments/bootanimation-zip.2986805/
-
-      - name: Apply performance tweaks
-        run: |
-          echo "Applying performance tweaks..."
           echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
           echo 'vm.vfs_cache_pressure=50' | sudo tee -a /etc/sysctl.conf
           echo 'kernel.sched_migration_cost_ns=5000000' | sudo tee -a /etc/sysctl.conf
 
-      - name: Generate OTA JSON
-        run: |
-          BUILD_DATE=$(date +%Y%m%d)
-          BUILD_VERSION="WolfOS-${BUILD_DATE}"
-          OTA_JSON="out/target/product/ota.json"
-          mkdir -p out/target/product/
-          echo "{" > ${OTA_JSON}
-          echo "  \"build_date\": \"${BUILD_DATE}\"," >> ${OTA_JSON}
-          echo "  \"version\": \"${BUILD_VERSION}\"," >> ${OTA_JSON}
-          echo "  \"filename\": \"WolfOS-OTA-${BUILD_DATE}.zip\"" >> ${OTA_JSON}
-          echo "}" >> ${OTA_JSON}
-
-      - name: Generate Changelog
-        run: |
-          echo "Generating changelog..."
-          echo "WolfOS Build - $(date)" > out/target/product/CHANGELOG.txt
-          git log -1 --pretty=format:"%h - %s (%ci)" >> out/target/product/CHANGELOG.txt
-
-      - name: Lunch and Build
+      - name: Lunch Configuration
         run: |
           source build/envsetup.sh
-          lunch cm_x86_64-userdebug
+          lunch cm_${{ matrix.architecture }}-${{ matrix.variant }}
+
+      - name: Build Targets
+        run: |
           make -j$(nproc) iso_img otapackage
 
-      - name: Upload WolfOS ISO
+      - name: Save Cache (Incremental Builds)
+        uses: actions/cache@v3
+        with:
+          path: |
+            .repo
+            out/
+            ccache/
+          key: build-${{ matrix.architecture }}-${{ matrix.variant }}
+
+      - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: WolfOS
+          name: WolfOS-${{ matrix.architecture }}-${{ matrix.variant }}
           path: out/target/product/*/*.iso
 
-      - name: Upload OTA Update ZIP
+      - name: Upload OTA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: WolfOS-OTA
+          name: WolfOS-OTA-${{ matrix.architecture }}-${{ matrix.variant }}
           path: out/target/product/*/WolfOS-OTA-*.zip
-
-      - name: Upload OTA JSON
-        uses: actions/upload-artifact@v4
-        with:
-          name: OTA-JSON
-          path: out/target/product/ota.json
-
-      - name: Upload Changelog
-        uses: actions/upload-artifact@v4
-        with:
-          name: Changelog
-          path: out/target/product/CHANGELOG.txt
