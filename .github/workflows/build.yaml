@@ -47,7 +47,7 @@ jobs:
         run: |
           mkdir -p wolfos
           cd wolfos
-          repo init -u https://github.com/android-x86/manifest -b main
+          repo init -u repo init -u http://scm.osdn.net/gitroot/android-x86/manifest -b r-x86
           repo sync -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
 
       - name: Integrate Lawnchair Launcher
