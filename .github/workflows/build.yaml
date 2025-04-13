@@ -23,13 +23,30 @@ jobs:
       - name: Install Required Tools and Dependencies
         run: |
           sudo apt update
-          sudo apt install -y git bc bison build-essential curl flex g++-multilib gcc-multilib git gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev lib32z1-dev libc6-dev-i386 libgl1-mesa-dev
+          packages=(
+            git bc bison build-essential curl flex g++-multilib gcc-multilib
+            gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev
+            lib32z1-dev libc6-dev-i386 libgl1-mesa-dev
+          )
+
+          for pkg in "${packages[@]}"; do
+            if dpkg -l | grep -q "$pkg"; then
+              echo "$pkg is already installed, skipping."
+            else
+              echo "Installing $pkg..."
+              sudo apt install -y $pkg
+            fi
+          done
 
       - name: Install Repo Tool
         run: |
-          curl https://storage.googleapis.com/git-repo-downloads/repo -o repo
-          chmod +x repo
-          sudo mv repo /usr/local/bin/repo
+          if ! command -v repo &> /dev/null; then
+            curl https://storage.googleapis.com/git-repo-downloads/repo -o repo
+            chmod +x repo
+            sudo mv repo /usr/local/bin/repo
+          else
+            echo "Repo tool is already installed, skipping."
+          fi
 
       - name: Restore Cache (Incremental Builds)
         id: cache-restore
@@ -47,27 +64,8 @@ jobs:
         run: |
           mkdir -p wolfos
           cd wolfos
-          repo init -u git://git.osdn.net/gitroot/android-x86/manifest -b r-x86
+          repo init -u https://chromium.googlesource.com/chromiumos/manifest -b release-R114-15437.B
           repo sync -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
-
-      - name: Integrate Lawnchair Launcher
-        run: |
-          cd wolfos
-          mkdir -p packages/apps/Lawnchair
-          cd packages/apps/Lawnchair
-          wget -O Lawnchair.apk https://github.com/LawnchairLauncher/lawnchair/releases/latest/download/Lawnchair.apk
-          cat <<EOF > Android.mk
-          LOCAL_PATH := \$(call my-dir)
-
-          include \$(CLEAR_VARS)
-          LOCAL_MODULE := Lawnchair
-          LOCAL_SRC_FILES := Lawnchair.apk
-          LOCAL_MODULE_CLASS := APPS
-          LOCAL_MODULE_PATH := \$(TARGET_OUT)/app
-          LOCAL_MODULE_TAGS := optional
-          LOCAL_CERTIFICATE := PRESIGNED
-          include \$(BUILD_PREBUILT)
-          EOF
 
       - name: Configure Features
         run: |
@@ -75,13 +73,29 @@ jobs:
           echo "persist.sys.debug.multi_window=true" >> device/generic/common/build.prop
           echo "persist.sys.freeform_window_state=true" >> device/generic/common/build.prop
           echo "persist.sys.enable_freeform_support=true" >> device/generic/common/build.prop
-          # Additional configurations can be added here
+          echo "chrome.browser.history.enabled=false" >> device/generic/common/build.prop
+          echo "persist.chrome.homepage=alphasearch.pages.dev" >> device/generic/common/build.prop
+          echo "persist.chrome.enable_touchscreen=true" >> device/generic/common/build.prop
+
+      - name: Set Up Wallpaper Download
+        run: |
+          cd wolfos
+          wget -O /home/chronos/user/Downloads/wolfos_wallpaper.jpg https://avatars.githubusercontent.com/u/147162816?v=4
+          # Make sure wallpaper sets on login
+          mkdir -p /etc/xdg/autostart
+          cat <<EOF > /etc/xdg/autostart/set-wallpaper.desktop
+          [Desktop Entry]
+          Type=Application
+          Exec=sh -c "gsettings set org.gnome.desktop.background picture-uri file:///home/chronos/user/Downloads/wolfos_wallpaper.jpg"
+          Name=Set WolfOS Wallpaper
+          Comment=Automatically set WolfOS wallpaper on startup
+          EOF
 
       - name: Lunch Configuration
         run: |
           cd wolfos
           source build/envsetup.sh
-          lunch android_x86_${{ matrix.variant }}
+          lunch chromiumos_${{ matrix.variant }}
 
       - name: Build Targets
         run: |
