@@ -45,16 +45,47 @@ jobs:
 
       - name: Sync Source Code
         run: |
-          repo init -u https://github.com/BlissRoms-x86/manifest -b arcadia-x86 --git-lfs
+          mkdir -p wolfos
+          cd wolfos
+          repo init -u https://github.com/android-x86/manifest -b main
           repo sync -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
-          
+
+      - name: Integrate Lawnchair Launcher
+        run: |
+          cd wolfos
+          mkdir -p packages/apps/Lawnchair
+          cd packages/apps/Lawnchair
+          wget -O Lawnchair.apk https://github.com/LawnchairLauncher/lawnchair/releases/latest/download/Lawnchair.apk
+          cat <<EOF > Android.mk
+          LOCAL_PATH := \$(call my-dir)
+
+          include \$(CLEAR_VARS)
+          LOCAL_MODULE := Lawnchair
+          LOCAL_SRC_FILES := Lawnchair.apk
+          LOCAL_MODULE_CLASS := APPS
+          LOCAL_MODULE_PATH := \$(TARGET_OUT)/app
+          LOCAL_MODULE_TAGS := optional
+          LOCAL_CERTIFICATE := PRESIGNED
+          include \$(BUILD_PREBUILT)
+          EOF
+
+      - name: Configure Features
+        run: |
+          cd wolfos
+          echo "persist.sys.debug.multi_window=true" >> device/generic/common/build.prop
+          echo "persist.sys.freeform_window_state=true" >> device/generic/common/build.prop
+          echo "persist.sys.enable_freeform_support=true" >> device/generic/common/build.prop
+          # Additional configurations can be added here
+
       - name: Lunch Configuration
         run: |
+          cd wolfos
           source build/envsetup.sh
-          lunch cm_${{ matrix.architecture }}-${{ matrix.variant }}
+          lunch android_x86_${{ matrix.variant }}
 
       - name: Build Targets
         run: |
+          cd wolfos
           make -j$(nproc) iso_img otapackage
 
       - name: Save Cache (Incremental Builds)
@@ -70,10 +101,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WolfOS-${{ matrix.architecture }}-${{ matrix.variant }}
-          path: out/target/product/*/*.iso
+          path: wolfos/out/target/product/*/*.iso
 
       - name: Upload OTA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: WolfOS-OTA-${{ matrix.architecture }}-${{ matrix.variant }}
-          path: out/target/product/*/WolfOS-OTA-*.zip
+          path: wolfos/out/target/product/*/WolfOS-OTA-*.zip
