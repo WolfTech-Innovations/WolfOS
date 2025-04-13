@@ -6,7 +6,7 @@ on:
 jobs:
   build-matrix:
     name: Build WolfOS (Matrix)
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         architecture: [x86_64, arm64]
