@@ -4,9 +4,6 @@
 # Latest Release: Sticky Syrup (KDE)
 # For Support Email [support@wolfos.uk](mailto:support@wolfos.uk)
 # Or Text (888) 680-2509 (TEXTING ONLY)
-## Overview:
-
-We and our WolfOS ecosystem allows developers to thrive by being able to write NixOS-Like config to install all the packages you need with a single config file after installing the OS. Updates? No problem! You can just specify packages for install in the config so you can set the kernel version you want, its just as easy as that.
 
 ## Installation:
 
