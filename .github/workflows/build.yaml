@@ -24,8 +24,8 @@ jobs:
         run: |
           sudo apt update
           packages=(
-            git bc bison build-essential curl flex g++-multilib gcc-multilib
-            gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev
+            git bc bison build-essential curl flex g++-multilib gcc-multilib \
+            gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev \
             lib32z1-dev libc6-dev-i386 libgl1-mesa-dev
           )
 
@@ -67,21 +67,32 @@ jobs:
           repo init -u https://chromium.googlesource.com/chromiumos/manifest -b release-R114-15437.B
           repo sync -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
 
-      - name: Configure Features
+      - name: Rebrand ChromeOS to WolfOS
         run: |
           cd wolfos
-          echo "persist.sys.debug.multi_window=true" >> device/generic/common/build.prop
-          echo "persist.sys.freeform_window_state=true" >> device/generic/common/build.prop
-          echo "persist.sys.enable_freeform_support=true" >> device/generic/common/build.prop
-          echo "chrome.browser.history.enabled=false" >> device/generic/common/build.prop
-          echo "persist.chrome.homepage=alphasearch.pages.dev" >> device/generic/common/build.prop
-          echo "persist.chrome.enable_touchscreen=true" >> device/generic/common/build.prop
+          find . -type f -name "*.xml" -exec sed -i 's/ChromeOS/WolfOS/g' {} +
+
+      - name: Remove Boot Logo (if exists)
+        run: |
+          cd wolfos
+          BOOTLOGO="firmware/bootlogo.bmp"
+          if [ -f "$BOOTLOGO" ]; then
+            echo "Removing boot logo..."
+            rm -f "$BOOTLOGO"
+          else
+            echo "Boot logo not found, skipping."
+          fi
+
+      - name: Remove Telemetry
+        run: |
+          cd wolfos
+          echo "Stripping telemetry..."
+          grep -rlE 'metrics|telemetry|uma' . | xargs --no-run-if-empty sed -i '/metrics\|telemetry\|uma/d'
 
       - name: Set Up Wallpaper Download
         run: |
           cd wolfos
           wget -O /home/chronos/user/Downloads/wolfos_wallpaper.jpg https://avatars.githubusercontent.com/u/147162816?v=4
-          # Make sure wallpaper sets on login
           mkdir -p /etc/xdg/autostart
           cat <<EOF > /etc/xdg/autostart/set-wallpaper.desktop
           [Desktop Entry]
