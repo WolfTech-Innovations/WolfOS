@@ -11,16 +11,6 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
-        
-      - name: Install Repo Tool
-        run: |
-          if ! command -v repo &> /dev/null; then
-            curl https://storage.googleapis.com/git-repo-downloads/repo -o repo
-            chmod +x repo
-            sudo mv repo /usr/local/bin/repo
-          else
-            echo "Repo tool is already installed, skipping."
-          fi
 
       - name: Restore Cache (Incremental Builds)
         id: cache-restore
