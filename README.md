@@ -9,11 +9,10 @@
 
 To install WolfOS, follow these steps:
 
-1. Download the ISO from the Sourceforge Mirror.
+1. Download the BIN from the Sourceforge Mirror.
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install WolfOS.
-5. (For Developers) To make a NixOS-Like deployment system, first install the OS on hardware or a VM then use CLCTool to execute the deployment / config scripts you have wrote; More info at [CLCTool](https://github.com/WolfTech-Innovations/CLCTool)
 
 ## Conclusion:
 
