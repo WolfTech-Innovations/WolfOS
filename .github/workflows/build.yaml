@@ -4,18 +4,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-matrix:
-    name: Build WolfOS (Matrix)
+  build-wolfos:
+    name: Build WolfOS (amd64)
     runs-on: self-hosted
-    strategy:
-      matrix:
-        architecture: [x86_64, arm64]
-        variant: [user, userdebug, eng]
-        include:
-          - architecture: x86_64
-            variant: userdebug
-          - architecture: arm64
-            variant: eng
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -28,7 +20,6 @@ jobs:
             gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev \
             lib32z1-dev libc6-dev-i386 libgl1-mesa-dev
           )
-
           for pkg in "${packages[@]}"; do
             if dpkg -l | grep -q "$pkg"; then
               echo "$pkg is already installed, skipping."
@@ -56,16 +47,16 @@ jobs:
             .repo
             out/
             ccache/
-          key: build-${{ matrix.architecture }}-${{ matrix.variant }}
+          key: build-amd64
           restore-keys: |
-            build-${{ matrix.architecture }}-
+            build-amd64-
 
       - name: Sync Source Code
         run: |
           mkdir -p wolfos
           cd wolfos
-          repo init -u https://chromium.googlesource.com/chromiumos/manifest -b release-R114-15437.B
-          repo sync -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
+          repo init -u https://chromium.googlesource.com/chromiumos/manifest.git -b release-R114-15437.B -g minilayout
+          repo sync -c -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
 
       - name: Rebrand ChromeOS to WolfOS
         run: |
@@ -102,16 +93,20 @@ jobs:
           Comment=Automatically set WolfOS wallpaper on startup
           EOF
 
-      - name: Lunch Configuration
+      - name: Set Up Build Environment
         run: |
           cd wolfos
-          source build/envsetup.sh
-          lunch chromiumos_${{ matrix.variant }}
+          ./chromite/bin/cros_sdk -- ./setup_board --board=amd64-generic
 
-      - name: Build Targets
+      - name: Build Packages
         run: |
           cd wolfos
-          make -j$(nproc) iso_img otapackage
+          ./chromite/bin/cros_sdk -- ./build_packages --board=amd64-generic
+
+      - name: Build Image
+        run: |
+          cd wolfos
+          ./chromite/bin/cros_sdk -- ./build_image --board=amd64-generic base
 
       - name: Save Cache (Incremental Builds)
         uses: actions/cache@v3
@@ -120,16 +115,10 @@ jobs:
             .repo
             out/
             ccache/
-          key: build-${{ matrix.architecture }}-${{ matrix.variant }}
+          key: build-amd64
 
-      - name: Upload ISO Artifact
+      - name: Upload Image Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: WolfOS-${{ matrix.architecture }}-${{ matrix.variant }}
-          path: wolfos/out/target/product/*/*.iso
-
-      - name: Upload OTA Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: WolfOS-OTA-${{ matrix.architecture }}-${{ matrix.variant }}
-          path: wolfos/out/target/product/*/WolfOS-OTA-*.zip
+          name: WolfOS-amd64
+          path: wolfos/src/build/images/amd64-generic/latest/*.bin
