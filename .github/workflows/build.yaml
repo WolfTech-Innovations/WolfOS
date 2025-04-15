@@ -11,24 +11,7 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
-
-      - name: Install Required Tools and Dependencies
-        run: |
-          sudo apt update
-          packages=(
-            git bc bison build-essential curl flex g++-multilib gcc-multilib \
-            gnupg gperf imagemagick lib32ncurses-dev lib32readline-dev \
-            lib32z1-dev libc6-dev-i386 libgl1-mesa-dev
-          )
-          for pkg in "${packages[@]}"; do
-            if dpkg -l | grep -q "$pkg"; then
-              echo "$pkg is already installed, skipping."
-            else
-              echo "Installing $pkg..."
-              sudo apt install -y $pkg
-            fi
-          done
-
+        
       - name: Install Repo Tool
         run: |
           if ! command -v repo &> /dev/null; then
