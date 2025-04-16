@@ -28,7 +28,7 @@ jobs:
         run: |
           mkdir -p wolfos
           cd wolfos
-          repo init -u https://github.com/openFyde/manifest.git -b release-R114-15437.B
+          repo init -u https://chromium.googlesource.com/chromiumos/manifest.git -b release-R114-15437.B
           repo sync -c -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
 
       - name: Rebrand ChromeOS to WolfOS
@@ -53,20 +53,21 @@ jobs:
           echo "Stripping telemetry..."
           grep -rlE 'metrics|telemetry|uma' . | xargs --no-run-if-empty sed -i '/metrics\|telemetry\|uma/d'
 
+
       - name: Set Up Build Environment
         run: |
           cd wolfos
-          ./chromite/bin/cros_sdk -- ./setup_board --board=amd64-openfyde
+          ./chromite/bin/cros_sdk -- ./setup_board --board=amd64-generic
 
       - name: Build Packages
         run: |
           cd wolfos
-          ./chromite/bin/cros_sdk -- ./build_packages --board=amd64-openfyde
+          ./chromite/bin/cros_sdk -- ./build_packages --board=amd64-generic
 
       - name: Build Image
         run: |
           cd wolfos
-          ./chromite/bin/cros_sdk -- ./build_image --board=amd64-openfyde base
+          ./chromite/bin/cros_sdk -- ./build_image --board=amd64-generic base
 
       - name: Save Cache (Incremental Builds)
         uses: actions/cache@v3
@@ -81,4 +82,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WolfOS-amd64
-          path: wolfos/src/build/images/amd64-openfyde/latest/*.bin
+          path: wolfos/src/build/images/amd64-generic/latest/*.bin
