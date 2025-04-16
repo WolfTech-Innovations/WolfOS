@@ -28,9 +28,8 @@ jobs:
         run: |
           mkdir -p wolfos
           cd wolfos
-          repo init -u https://chromium.googlesource.com/chromiumos/manifest.git -b release-R114-15437.B -g minilayout
+          repo init -u https://chromium.googlesource.com/chromiumos/manifest.git -b release-R114-15437.B
           repo sync -c -j$(nproc) --force-sync --prune --no-tags --no-clone-bundle
-          sed -i 's/^else:$/else:\n    pass/' chromite/cbuildbot/cbuildbot_alerts.py
 
       - name: Rebrand ChromeOS to WolfOS
         run: |
