@@ -53,18 +53,6 @@ jobs:
           echo "Stripping telemetry..."
           grep -rlE 'metrics|telemetry|uma' . | xargs --no-run-if-empty sed -i '/metrics\|telemetry\|uma/d'
 
-      - name: Set Up Wallpaper Download
-        run: |
-          cd wolfos
-          wget -O /home/chronos/user/Downloads/wolfos_wallpaper.jpg https://avatars.githubusercontent.com/u/147162816?v=4
-          mkdir -p /etc/xdg/autostart
-          cat <<EOF > /etc/xdg/autostart/set-wallpaper.desktop
-          [Desktop Entry]
-          Type=Application
-          Exec=sh -c "gsettings set org.gnome.desktop.background picture-uri file:///home/chronos/user/Downloads/wolfos_wallpaper.jpg"
-          Name=Set WolfOS Wallpaper
-          Comment=Automatically set WolfOS wallpaper on startup
-          EOF
 
       - name: Set Up Build Environment
         run: |
