@@ -86,7 +86,7 @@ jobs:
 
       # Step 7: Upload the ISO as an artifact
       - name: Upload ISO artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: wolfos
           path: wolfos.iso
