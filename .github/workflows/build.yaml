@@ -44,7 +44,7 @@ jobs:
 
           # Install necessary packages
           sudo chroot rootfs apt-get install -y openbox chromium plank \
-            pcmanfm vlc cloud-init
+            pcmanfm vlc cloud-init calamares
 
           # Remove terminal applications
           sudo chroot rootfs apt-get purge -y xterm gnome-terminal
