@@ -1,4 +1,4 @@
-name: Build Custom WolfOS
+name: Build WolfOS
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-os:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       # Step 1: Check out the repository
       - name: Checkout code
@@ -54,10 +54,9 @@ jobs:
           echo "VERSION=\"1.0\"" >> rootfs/etc/os-release
           echo "PRETTY_NAME=\"WolfOS 1.0\"" >> rootfs/etc/os-release
           echo "Welcome to WolfOS!" > rootfs/etc/issue
-
           # Add custom branding (logos, wallpapers, etc.)
           mkdir -p rootfs/usr/share/wolfos
-          echo "Custom WolfOS branding files go here" > rootfs/usr/share/wolfos/branding.txt
+          echo "WolfOS" > rootfs/usr/share/wolfos/branding.txt
 
       # Step 5: Configure cloud-init and locked filesystem
       - name: Configure cloud-init and locked filesystem
