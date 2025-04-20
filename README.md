@@ -1,7 +1,5 @@
 [![Build WolfOS ISO](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml/badge.svg)](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml)
 # Welcome to WolfOS! 🐺:
-# 🚧 **We're working on a new version of WolfOS, a better one.** 🚧
-# Latest Release: Sticky Syrup (KDE)
 # For Support Email [support@wolfos.uk](mailto:support@wolfos.uk)
 # Or Text (888) 680-2509 (TEXTING ONLY)
 
@@ -9,7 +7,7 @@
 
 To install WolfOS, follow these steps:
 
-1. Download the BIN from the Sourceforge Mirror.
+1. Download the ISO from the Sourceforge Mirror.
 2. Create a bootable USB drive using your preferred tool (e.g., Rufus, Etcher).
 3. Boot your computer from the USB drive.
 4. Follow the on-screen instructions to install WolfOS.
