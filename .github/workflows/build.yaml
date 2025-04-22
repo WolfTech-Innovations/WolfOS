@@ -59,7 +59,7 @@ jobs:
           OSVER: 4          
         run: |
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso \
-            "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}/"
+            "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
 
       # Step 5: Upload build artifacts
       - name: Upload build artifacts (For Backup)
