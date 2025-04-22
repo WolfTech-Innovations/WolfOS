@@ -1,3 +1,5 @@
+[![Build WolfOS](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml/badge.svg)](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml)
+___
 # Welcome to WolfOS! 🐺:
 # For Support Email [support@wolfos.uk](mailto:support@wolfos.uk)
 # Or Text (888) 680-2509 (TEXTING ONLY)
