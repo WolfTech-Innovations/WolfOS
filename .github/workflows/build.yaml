@@ -44,8 +44,6 @@ jobs:
       # Step 6: Create bootable ISO
       - name: Create bootable ISO
         run: |
-          mkdir 
           wget https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initramfs.cpio.gz/download -o init.cpio.gz
           mv init.cpio.gz iso/boot/
-          wget 
           grub-mkrescue -o wolfos.iso iso
