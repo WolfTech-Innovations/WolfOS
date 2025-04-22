@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-os:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       # Step 1: Check out the repository
       - name: Checkout code
