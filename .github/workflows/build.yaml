@@ -24,6 +24,7 @@ jobs:
             squashfs-tools \
             grub-pc-bin \
             xorriso \
+            mtools
 
       # Step 3: Download the Linux Kernel
       - name: Download Linux Kernel
