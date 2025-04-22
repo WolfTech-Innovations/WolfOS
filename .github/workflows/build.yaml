@@ -3,7 +3,6 @@ name: Build WolfOS
 on:
   workflow_dispatch:
 
-
 jobs:
   build-os:
     runs-on: ubuntu-latest
@@ -26,21 +25,33 @@ jobs:
             xorriso \
             mtools
 
-      # Step 3: Download the Linux Kernel
-      - name: Download Linux Kernel
+      # Step 3: Download Linux Kernel and resources
+      - name: Download Linux Kernel and resources
         run: |
-          wget https://github.com/WolfTech-Innovations/WLFBUILD-RESOURCE/blob/main/vmlinuz -O vmlinuz
           mkdir iso 
           mkdir iso/boot
           mkdir iso/boot/grub
-          cp ./vmlinuz iso/boot/
-          wget https://github.com/WolfTech-Innovations/WLFBUILD-RESOURCE/blob/main/grub.cfg
-          cp ./grub.cfg iso/boot/grub/
-          wget https://github.com/WolfTech-Innovations/WLFBUILD-RESOURCE/blob/main/splash.png
-          cp ./splash.png iso/boot/grub/
-      # Step 6: Create bootable ISO
+
+          # Download Linux kernel
+          wget https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz -O iso/boot/vmlinuz
+
+          # Download GRUB configuration
+          wget https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg -O iso/boot/grub/grub.cfg
+
+          # Download splash image
+          wget https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png -O iso/boot/grub/splash.png
+
+          # Download initramfs from SourceForge
+          wget https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/init.cpio.gz/download -O iso/boot/init.cpio.gz
+
+      # Step 4: Create bootable ISO
       - name: Create bootable ISO
         run: |
-          wget https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initramfs.cpio.gz/download -o init.cpio.gz
-          mv init.cpio.gz iso/boot/
           grub-mkrescue -o wolfos.iso iso
+
+      # Step 5: Upload build artifacts
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: wolfos-iso
+          path: wolfos.iso
