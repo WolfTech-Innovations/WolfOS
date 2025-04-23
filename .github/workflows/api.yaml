@@ -1,4 +1,4 @@
-name: Send fail to API
+name: Send response to API
 
 on:
   workflow_dispatch:
