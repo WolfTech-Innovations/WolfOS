@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       force_fail:
-        description: "Force fail"
+        description: "Force fail API (Now used for FAILAPI.YAML)"
         required: false
         default: "No"
         type: choice
@@ -42,10 +42,17 @@ jobs:
         run: |
           set -e
           mkdir -p iso/boot/grub
-
+          export file="vmlinuz"
+          echo "[DOWNLOAD] DOWNLOADING $FILE"
           wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          export file="grub.cfg"
+          echo "[DOWNLOAD] DOWNLOADING $FILE"
           wget -O iso/boot/grub/grub.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg
+          export file="splash.png"
+          echo "[DOWNLOAD] DOWNLOADING $FILE"
           wget -O iso/boot/grub/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
+          export file="init.cpio.gz"
+          echo "[DOWNLOAD] DOWNLOADING $FILE"
           wget -O iso/boot/init.cpio.gz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/init.cpio.gz/download
 
       - name: Create ISO
@@ -109,4 +116,4 @@ jobs:
         env:
           API_URL: ${{ secrets.API_URL }}
         run: |
-            curl -X POST "$API_URL"
+            curl "$API_URL"
