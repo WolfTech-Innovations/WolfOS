@@ -1,4 +1,4 @@
-name: Build WolfOS
+name: Build WolfOS (No SourceForge)
 
 on:
   workflow_dispatch:
