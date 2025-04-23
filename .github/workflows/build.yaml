@@ -2,18 +2,30 @@ name: Build WolfOS
 
 on:
   workflow_dispatch:
+    inputs:
+      force_fail:
+        description: "Force fail"
+        required: false
+        default: "No"
+        type: choice
+        options:
+          - "No"
+          - "Yes"
 
 jobs:
   build-os:
     runs-on: ubuntu-latest
+    outputs:
+      build_success: ${{ steps.set-status.outputs.success }}
+
     steps:
-      # Step 1: Check out the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Install dependencies
       - name: Install dependencies
+        id: install-deps
         run: |
+          set -e
           sudo apt-get update
           sudo apt-get install -y \
             build-essential \
@@ -25,45 +37,81 @@ jobs:
             xorriso \
             mtools
 
-      # Step 3: Download Linux Kernel and resources
-      - name: Download Linux Kernel and resources
+      - name: Download Kernel & Resources
+        id: download
         run: |
-          mkdir iso 
-          mkdir iso/boot
-          mkdir iso/boot/grub
+          set -e
+          mkdir -p iso/boot/grub
 
-          # Download Linux kernel
-          wget https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz -O iso/boot/vmlinuz
+          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          wget -O iso/boot/grub/grub.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg
+          wget -O iso/boot/grub/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
+          wget -O iso/boot/init.cpio.gz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/init.cpio.gz/download
 
-          # Download GRUB configuration
-          wget https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg -O iso/boot/grub/grub.cfg
-
-          # Download splash image
-          wget https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png -O iso/boot/grub/splash.png
-
-          # Download initramfs from SourceForge
-          wget https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/init.cpio.gz/download -O iso/boot/init.cpio.gz
-
-      # Step 4: Create bootable ISO
-      - name: Create bootable ISO
+      - name: Create ISO
+        id: iso
         run: |
+          set -e
           grub-mkrescue -o wolfos.iso iso
 
       - name: Install sshpass
-        run: sudo apt-get install -y sshpass
+        id: sshpass
+        run: |
+          set -e
+          sudo apt-get install -y sshpass
 
       - name: Upload to SourceForge
+        id: upload
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
-          OSVER: 6      
+          OSVER: 6
         run: |
+          set -e
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso \
             "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
 
-      # Step 5: Upload build artifacts
-      - name: Upload build artifacts (For Backup)
+      - name: Upload Artifacts
+        id: artifacts
         uses: actions/upload-artifact@v4
         with:
           name: wolfos-iso
           path: wolfos.iso
+
+      - name: Set build status
+        id: set-status
+        run: |
+          if [[ "${{ github.event.inputs.force_fail }}" == "Yes" ]]; then
+            echo "Forced failure."
+            echo "success=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          if [[ "${{ steps.install-deps.outcome }}" == "failure" || \
+                "${{ steps.download.outcome }}" == "failure" || \
+                "${{ steps.iso.outcome }}" == "failure" || \
+                "${{ steps.sshpass.outcome }}" == "failure" || \
+                "${{ steps.upload.outcome }}" == "failure" || \
+                "${{ steps.artifacts.outcome }}" == "failure" ]]; then
+            echo "Detected failure in steps."
+            echo "success=false" >> $GITHUB_OUTPUT
+          else
+            echo "All steps succeeded."
+            echo "success=true" >> $GITHUB_OUTPUT
+          fi
+
+  notify-api:
+    needs: build-os
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Notify API
+        env:
+          API_URL: ${{ secrets.API_URL }}
+        run: |
+          if [[ "${{ needs.build-os.outputs.build_success }}" == "true" ]]; then
+            curl -X POST "$API_URL" -H "Content-Type: application/json" \
+              -d '{"status": "success", "message": "Build completed successfully."}'
+          else
+            curl -X POST "$API_URL/fail" -H "Content-Type: application/json" \
+              -d '{"status": "fail", "message": "One or more build steps failed."}'
