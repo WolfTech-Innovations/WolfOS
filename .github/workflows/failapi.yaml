@@ -1,15 +1,15 @@
-name: Send response to API
+name: Send failure response to API
 
 on:
   workflow_dispatch:
     inputs:
       force_fail:
         description: "Force fail"
-        required: false
-        default: "No"
+        required: true
+        default: "Yes"
         type: choice
         options:
-          - "No"
+          - "-"
           - "Yes"
 
 jobs:
