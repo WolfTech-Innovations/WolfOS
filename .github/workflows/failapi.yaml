@@ -63,7 +63,4 @@ jobs:
         env:
           API_URL: ${{ secrets.API_URL }}
         run: |
-          if [[ "${{ needs.build-os.outputs.build_success }}" == "true" ]]; then
-            curl "$API_URL"
-          else
             curl "$API_URL/fail"
