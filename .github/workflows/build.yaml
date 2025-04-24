@@ -30,7 +30,7 @@ jobs:
             build-essential \
             gcc \
             make \
-            grub* \
+            grub-pc \
             genisoimage \
             squashfs-tools \
             xorriso \
