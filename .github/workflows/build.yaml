@@ -33,33 +33,49 @@ jobs:
             make \
             genisoimage \
             squashfs-tools \
-            grub-pc-bin \
+            syslinux \
+            syslinux-common \
+            mtools \
             xorriso \
-            mtools
+            wget
 
       - name: Download Kernel & Resources
         id: download
         run: |
           set -e
-          mkdir -p iso/boot/grub
-          export file="vmlinuz"
-          echo "[DOWNLOAD] DOWNLOADING $FILE"
-          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
-          export file="grub.cfg"
-          echo "[DOWNLOAD] DOWNLOADING $FILE"
-          wget -O iso/boot/grub/grub.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg
-          export file="splash.png"
-          echo "[DOWNLOAD] DOWNLOADING $FILE"
-          wget -O iso/boot/grub/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
-          export file="init.cpio.gz"
-          echo "[DOWNLOAD] DOWNLOADING $FILE"
-          wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
+          mkdir -p iso/isolinux
+          wget -O iso/isolinux/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          wget -O iso/isolinux/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
+          wget -O iso/isolinux/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
+
+          # Syslinux bootloader files
+          cp /usr/lib/ISOLINUX/isolinux.bin iso/isolinux/
+          cp /usr/lib/syslinux/modules/bios/ldlinux.c32 iso/isolinux/
+
+          cat > iso/isolinux/syslinux.cfg <<EOF
+UI menu.c32
+PROMPT 0
+TIMEOUT 30
+DEFAULT wolfos
+
+LABEL wolfos
+  MENU LABEL Run WolfOS
+  KERNEL /isolinux/vmlinuz
+  APPEND initrd=/isolinux/initrd.img.xz root=/dev/ram0 rw console=tty0 rootfstype=ramfs init=/init splash
+EOF
 
       - name: Create ISO
         id: iso
         run: |
           set -e
-          grub-mkrescue -o wolfos.iso iso
+          genisoimage -o wolfos.iso \
+            -b isolinux/isolinux.bin \
+            -c isolinux/boot.cat \
+            -no-emul-boot \
+            -boot-load-size 4 \
+            -boot-info-table \
+            -J -R -V "WOLFOS" \
+            iso
 
       - name: Install sshpass
         id: sshpass
@@ -116,4 +132,4 @@ jobs:
         env:
           API_URL: ${{ secrets.API_URL }}
         run: |
-            curl "$API_URL"
+            curl "$API_URL" set timeout=30
