@@ -30,13 +30,11 @@ jobs:
             build-essential \
             gcc \
             make \
-            syslinux \
-            isolinux \
+            grub* \
             genisoimage \
             squashfs-tools \
             xorriso \
             mtools \
-            syslinux-utils \
             sshpass \
             wget
 
