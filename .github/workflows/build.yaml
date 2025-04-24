@@ -60,7 +60,7 @@ jobs:
       - name: Create ISO
         run: |
           set -e
-          grub-mkrescue wolfos.iso iso
+          grub-mkrescue -o wolfos.iso iso
 
       - name: Upload to SourceForge
         env:
