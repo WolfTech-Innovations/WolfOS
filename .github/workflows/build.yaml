@@ -72,7 +72,7 @@ jobs:
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
-          OSVER: 2
+          OSVER: 1
         run: |
           set -e
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso \
