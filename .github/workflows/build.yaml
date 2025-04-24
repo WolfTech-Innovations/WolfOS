@@ -31,6 +31,8 @@ jobs:
             gcc \
             make \
             grub-pc \
+            grub-pc-bin \
+            grub-common \
             genisoimage \
             squashfs-tools \
             xorriso \
@@ -58,7 +60,7 @@ jobs:
       - name: Create ISO
         run: |
           set -e
-          mkgrubrescue wolfos.iso iso
+          grub-mkrescue wolfos.iso iso
 
       - name: Upload to SourceForge
         env:
