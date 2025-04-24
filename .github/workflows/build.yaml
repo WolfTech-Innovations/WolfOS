@@ -53,7 +53,7 @@ jobs:
           wget -O iso/boot/grub/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
           export file="init.cpio.gz"
           echo "[DOWNLOAD] DOWNLOADING $FILE"
-          wget -O iso/boot/init.cpio.gz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/init.cpio.gz/download
+          wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
 
       - name: Create ISO
         id: iso
@@ -72,7 +72,7 @@ jobs:
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
-          OSVER: 2
+          OSVER: 1
         run: |
           set -e
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso \
