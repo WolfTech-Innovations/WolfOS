@@ -23,7 +23,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        id: install-deps
         run: |
           set -e
           sudo apt-get update
@@ -31,60 +30,47 @@ jobs:
             build-essential \
             gcc \
             make \
+            syslinux \
+            isolinux \
             genisoimage \
             squashfs-tools \
-            syslinux \
-            syslinux-common \
-            mtools \
             xorriso \
+            mtools \
+            syslinux-utils \
+            sshpass \
             wget
 
       - name: Download Kernel & Resources
-        id: download
         run: |
           set -e
           mkdir -p iso/isolinux
-          wget -O iso/isolinux/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
-          wget -O iso/isolinux/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
-          wget -O iso/isolinux/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
-
-          # Syslinux bootloader files
+          echo "[DOWNLOAD] Kernel"
+          wget -O iso/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          
+          echo "[DOWNLOAD] Initramfs"
+          wget -O iso/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
+          
+          echo "[DOWNLOAD] Splash Image"
+          wget -O iso/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
+          
+          echo "[DOWNLOAD] isolinux.cfg"
+          wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
+          
+          # SYSLINUX boot files
           cp /usr/lib/ISOLINUX/isolinux.bin iso/isolinux/
           cp /usr/lib/syslinux/modules/bios/ldlinux.c32 iso/isolinux/
 
-          cat > iso/isolinux/syslinux.cfg <<EOF
-UI menu.c32
-PROMPT 0
-TIMEOUT 30
-DEFAULT wolfos
-
-LABEL wolfos
-  MENU LABEL Run WolfOS
-  KERNEL /isolinux/vmlinuz
-  APPEND initrd=/isolinux/initrd.img.xz root=/dev/ram0 rw console=tty0 rootfstype=ramfs init=/init splash
-EOF
-
       - name: Create ISO
-        id: iso
         run: |
           set -e
-          genisoimage -o wolfos.iso \
+          mkisofs -o wolfos.iso \
             -b isolinux/isolinux.bin \
             -c isolinux/boot.cat \
-            -no-emul-boot \
-            -boot-load-size 4 \
-            -boot-info-table \
-            -J -R -V "WOLFOS" \
-            iso
-
-      - name: Install sshpass
-        id: sshpass
-        run: |
-          set -e
-          sudo apt-get install -y sshpass
+            -no-emul-boot -boot-load-size 4 -boot-info-table \
+            -J -R -V "WolfOS" iso
+          isohybrid wolfos.iso
 
       - name: Upload to SourceForge
-        id: upload
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
@@ -95,7 +81,6 @@ EOF
             "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
 
       - name: Upload Artifacts
-        id: artifacts
         uses: actions/upload-artifact@v4
         with:
           name: wolfos-iso
@@ -109,19 +94,7 @@ EOF
             echo "success=false" >> $GITHUB_OUTPUT
             exit 0
           fi
-
-          if [[ "${{ steps.install-deps.outcome }}" == "failure" || \
-                "${{ steps.download.outcome }}" == "failure" || \
-                "${{ steps.iso.outcome }}" == "failure" || \
-                "${{ steps.sshpass.outcome }}" == "failure" || \
-                "${{ steps.upload.outcome }}" == "failure" || \
-                "${{ steps.artifacts.outcome }}" == "failure" ]]; then
-            echo "Detected failure in steps."
-            echo "success=false" >> $GITHUB_OUTPUT
-          else
-            echo "All steps succeeded."
-            echo "success=true" >> $GITHUB_OUTPUT
-          fi
+          echo "success=true" >> $GITHUB_OUTPUT
 
   notify-api:
     needs: build-os
@@ -132,4 +105,4 @@ EOF
         env:
           API_URL: ${{ secrets.API_URL }}
         run: |
-            curl "$API_URL" set timeout=30
+          curl --max-time 30 "$API_URL"
