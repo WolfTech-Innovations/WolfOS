@@ -43,7 +43,8 @@ jobs:
       - name: Download Kernel & Resources
         run: |
           set -e
-          mkdir -p iso/isolinux
+          mkdir iso
+          mkdir -p iso/grub
           echo "[DOWNLOAD] Kernel"
           wget -O iso/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
@@ -53,22 +54,13 @@ jobs:
           echo "[DOWNLOAD] Splash Image"
           wget -O iso/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
           
-          echo "[DOWNLOAD] isolinux.cfg"
-          wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
-          
-          # SYSLINUX boot files
-          cp /usr/lib/ISOLINUX/isolinux.bin iso/isolinux/
-          cp /usr/lib/syslinux/modules/bios/ldlinux.c32 iso/isolinux/
+          echo "[DOWNLOAD] grub.cfg"
+          wget -O iso/grub/grub.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg
 
       - name: Create ISO
         run: |
           set -e
-          mkisofs -o wolfos.iso \
-            -b isolinux/isolinux.bin \
-            -c isolinux/boot.cat \
-            -no-emul-boot -boot-load-size 4 -boot-info-table \
-            -J -R -V "WolfOS" iso
-          isohybrid wolfos.iso
+          mkgrubrescue wolfos.iso iso
 
       - name: Upload to SourceForge
         env:
