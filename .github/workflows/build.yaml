@@ -64,12 +64,13 @@ jobs:
           set -e
           echo "[CREATE] Creating ISO with Limine bootloader"
           xorriso -as mkisofs \
-            -r -J -l -o wolfos.iso \
-            -b boot/limine-bios-cd.bin \
-            -c boot/boot.cat \
-            -boot-load-size 4 \
-            -boot-info-table \
-            iso
+                -r -J -l -o wolfos.iso \
+                -b boot/limine-bios-cd.bin \
+                -c boot/boot.cat \
+                -boot-load-size 4 \
+                -boot-info-table \
+                -eltorito-boot boot/limine-bios-cd.bin \
+                iso
 
       - name: Upload to SourceForge
         env:
