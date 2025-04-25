@@ -44,18 +44,19 @@ jobs:
         run: |
           set -e
           mkdir iso
-          mkdir -p iso/grub
+          mkdir iso/boot
+          mkdir iso/boot/grub
           echo "[DOWNLOAD] Kernel"
-          wget -O iso/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
           echo "[DOWNLOAD] Initramfs"
-          wget -O iso/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
+          wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
           
           echo "[DOWNLOAD] Splash Image"
-          wget -O iso/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
+          wget -O iso/boot/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
           
           echo "[DOWNLOAD] grub.cfg"
-          wget -O iso/grub/grub.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg
+          wget -O iso/boot/grub/grub.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg
 
       - name: Create ISO
         run: |
