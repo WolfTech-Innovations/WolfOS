@@ -27,6 +27,7 @@ jobs:
             gcc \
             make \
             syslinux \
+            syslinux-utils \
             isolinux \
             genisoimage \
             squashfs-tools \
@@ -57,14 +58,14 @@ jobs:
         run: |
           set -e
           sudo genisoimage -o wolfos.iso \
-            --isohybrid-mbr /usr/lib/syslinux/isohdpfx.bin \
             -b isolinux/isolinux.bin \
             -c isolinux/boot.cat \
             -no-emul-boot -boot-load-size 4 -boot-info-table \
             -V "WOLFOS" \
             -r -J \
             iso
-            
+         sudo isohybrid wolfos.iso
+  
       - name: Upload to SourceForge
         env:
           SF_USER: ${{ secrets.SF_USER }}
