@@ -49,8 +49,8 @@ jobs:
           echo "[DOWNLOAD] Splash Image"
           wget -O iso/boot/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
           
-          echo "[DOWNLOAD] Limine BIOS Bootloader"
-          wget -O iso/boot/limine-bios-cd.bin https://github.com/limine-bootloader/limine/raw/refs/tags/v9.2.3-binary/limine-bios-cd.bin
+          echo "[DOWNLOAD] Limine UEFI Bootloader"
+          wget -O iso/boot/limine-bios-cd.bin https://github.com/limine-bootloader/limine/raw/refs/tags/v9.2.3-binary/limine-uefi-cd.bin
       - name: Create Limine Configuration
         run: |
           set -e
