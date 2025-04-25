@@ -58,12 +58,7 @@ jobs:
           mkdir -p iso/boot/limine
           
           echo "[CONFIG] Creating limine.cfg"
-          cat <<EOF > iso/boot/limine/limine.cfg
-  timeout 0
-  default /boot/vmlinuz
-  kernel /boot/vmlinuz
-  initrd /boot/initrd.img.xz
-EOF
+          echo -e "timeout 0\ndefault /boot/vmlinuz\nkernel /boot/vmlinuz\ninitrd /boot/initrd.img.xz" > iso/boot/limine/limine.cfg
 
       - name: Create ISO
         run: |
