@@ -1,0 +1,3 @@
+Openbox-Message: Couldn't set messages locale category from environment.
+Openbox-Message: Couldn't set locale from environment.
+Openbox-Message: Failed to open the display from the DISPLAY environment variable.
