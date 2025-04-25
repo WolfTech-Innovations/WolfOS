@@ -30,22 +30,16 @@ jobs:
             build-essential \
             gcc \
             make \
-            grub-pc \
-            grub-pc-bin \
-            grub-common \
-            genisoimage \
-            squashfs-tools \
+            wget \
             xorriso \
             mtools \
-            sshpass \
-            wget
+            sshpass
 
       - name: Download Kernel & Resources
         run: |
           set -e
-          mkdir iso
-          mkdir iso/boot
-          mkdir iso/boot/grub
+          mkdir -p iso/boot
+          
           echo "[DOWNLOAD] Kernel"
           wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
@@ -55,13 +49,33 @@ jobs:
           echo "[DOWNLOAD] Splash Image"
           wget -O iso/boot/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
           
-          echo "[DOWNLOAD] grub.cfg"
-          wget -O iso/boot/grub/grub.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg
+          echo "[DOWNLOAD] Limine BIOS Bootloader"
+          wget -O iso/boot/limine-bios-cd.bin https://github.com/limine-bootloader/limine/releases/download/v9.2.3-binary/limine-bios-cd.bin
+
+      - name: Create Limine Configuration
+        run: |
+          set -e
+          mkdir -p iso/boot/limine
+          
+          echo "[CONFIG] Creating limine.cfg"
+          cat <<EOF > iso/boot/limine/limine.cfg
+  timeout 0
+  default /boot/vmlinuz
+  kernel /boot/vmlinuz
+  initrd /boot/initrd.img.xz
+EOF
 
       - name: Create ISO
         run: |
           set -e
-          grub-mkrescue -o wolfos.iso iso
+          echo "[CREATE] Creating ISO with Limine bootloader"
+          xorriso -as mkisofs \
+            -r -J -l -o wolfos.iso \
+            -b boot/limine-bios-cd.bin \
+            -c boot/boot.cat \
+            -boot-load-size 4 \
+            -boot-info-table \
+            iso
 
       - name: Upload to SourceForge
         env:
