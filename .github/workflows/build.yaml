@@ -56,7 +56,7 @@ jobs:
       - name: Create ISO
         run: |
           set -e
-          genisoimage -o wolfos.iso \
+          sudo genisoimage -o wolfos.iso \
             -b isolinux/isolinux.bin \
             -c isolinux/boot.cat \
             -no-emul-boot -boot-load-size 4 -boot-info-table \
