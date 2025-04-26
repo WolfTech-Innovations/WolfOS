@@ -57,7 +57,7 @@ jobs:
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
-          OSVER: 2
+          OSVER: 1
         run: |
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
       - uses: actions/upload-artifact@v4
