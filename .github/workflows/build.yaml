@@ -22,15 +22,12 @@ jobs:
       - name: Setup minimal ISO structure
         run: |
           mkdir -p iso/isolinux
-          
+          mkdir -p iso/boot
           # Use smallest possible kernel
-          wget -O iso/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
           # Create an extremely minimal initramfs with maximum compression
-          wget -O initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
-          xz -d initrd.img.xz
-          xz -9e --extreme initrd.img
-          mv initrd.img.xz iso/initrd.img.xz
+          wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
           
           # Download isolinux config as in original script
           wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
