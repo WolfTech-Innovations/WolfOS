@@ -46,10 +46,7 @@ jobs:
             -V "WOLFOS" \
             -r -J -quiet \
             iso
-          
-          # Make hybrid but optimize for size
-          sudo isohybrid --id=0x00000000 --type=0x00 wolfos.iso
-          
+
           # Display final ISO size
           ls -lh wolfos.iso
           du -h wolfos.iso
