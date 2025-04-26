@@ -47,6 +47,8 @@ jobs:
             -r -J -quiet \
             iso
 
+          isohybrid wolfos.iso
+
           # Display final ISO size
           ls -lh wolfos.iso
           du -h wolfos.iso
