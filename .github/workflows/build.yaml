@@ -24,7 +24,7 @@ jobs:
           mkdir -p iso/isolinux
           mkdir -p iso/boot
           # Use smallest possible kernel
-          wget -O iso/boot/vmlinuz.bin.xz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz.bin.xz
+          wget -O iso/boot/vmlinux.bin.xz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinux.bin.xz
           
           # Create an extremely minimal initramfs with maximum compression
           wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
