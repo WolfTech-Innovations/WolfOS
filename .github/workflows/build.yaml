@@ -24,7 +24,7 @@ jobs:
           mkdir -p iso/isolinux
           mkdir -p iso/boot
           # Use smallest possible kernel
-          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          wget -O iso/boot/vmlinuz.bin.xz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz.bin.xz
           
           # Create an extremely minimal initramfs with maximum compression
           wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
@@ -32,7 +32,7 @@ jobs:
           # Download isolinux config as in original script
           wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
           
-          # Copy the essential ISOLINUX files including menu.c32
+          # Copy the essential ISOLINUX files
           sudo cp /usr/lib/ISOLINUX/isolinux.bin iso/isolinux/
           sudo cp /usr/lib/syslinux/modules/bios/ldlinux.c32 iso/isolinux/
           
