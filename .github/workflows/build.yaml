@@ -1,85 +1,76 @@
-name: Build WolfOS
-
+name: WolfOS
 on:
   workflow_dispatch:
     inputs:
       force_fail:
-        description: "Force fail API (Now used for FAILAPI.YAML)"
+        description: "Force fail API"
         required: false
         default: "No"
         type: choice
-        options:
-          - "No"
-          - "Yes"
-
+        options: ["No", "Yes"]
 jobs:
   build-os:
     runs-on: ubuntu-latest
     outputs:
       build_success: ${{ steps.set-status.outputs.success }}
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
-          set -e
           sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            gcc \
-            make \
-            grub-pc \
-            grub-pc-bin \
-            grub-common \
-            genisoimage \
-            squashfs-tools \
-            xorriso \
-            mtools \
-            sshpass \
-            wget
-      - name: Download Kernel & Resources
+          sudo apt-get install -y build-essential gcc make syslinux syslinux-utils isolinux genisoimage squashfs-tools mtools sshpass wget xz-utils
+      - name: Setup minimal ISO structure
         run: |
-          set -e
-          mkdir iso
-          mkdir iso/boot
-          mkdir iso/boot/grub
-          echo "[DOWNLOAD] Kernel"
-          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          mkdir -p iso/isolinux
           
-          echo "[DOWNLOAD] Initramfs"
-          wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
+          # Use smallest possible kernel
+          wget -O iso/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
-          echo "[DOWNLOAD] Splash Image"
-          wget -O iso/boot/splash.png https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/splash.png
+          # Create an extremely minimal initramfs with maximum compression
+          wget -O initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
+          xz -d initrd.img.xz
+          xz -9e --extreme initrd.img
+          mv initrd.img.xz iso/initrd.img.xz
           
-          echo "[DOWNLOAD] grub.cfg"
-          wget -O iso/boot/grub/grub.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/grub.cfg
-      - name: Create ISO
+          # Download isolinux config as in original script
+          wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
+          
+          # Copy the essential ISOLINUX files including menu.c32
+          sudo cp /usr/lib/ISOLINUX/isolinux.bin iso/isolinux/
+          sudo cp /usr/lib/syslinux/modules/bios/ldlinux.c32 iso/isolinux/
+          
+      - name: Create minimal ISO
         run: |
-          set -e
-          grub-mkrescue -o wolfos.iso iso
+          # Create ISO with minimal options
+          sudo genisoimage -o wolfos.iso \
+            -b isolinux/isolinux.bin \
+            -c isolinux/boot.cat \
+            -no-emul-boot -boot-load-size 4 -boot-info-table \
+            -V "WOLFOS" \
+            -r -J -quiet \
+            iso
+          
+          # Make hybrid but optimize for size
+          sudo isohybrid --id=0x00000000 --type=0x00 wolfos.iso
+          
+          # Display final ISO size
+          ls -lh wolfos.iso
+          du -h wolfos.iso
       - name: Upload to SourceForge
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
           OSVER: 1
         run: |
-          set -e
-          sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso \
-            "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+          sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
+      - uses: actions/upload-artifact@v4
         with:
           name: wolfos-iso
           path: wolfos.iso
-
       - name: Set build status
         id: set-status
         run: |
           if [[ "${{ github.event.inputs.force_fail }}" == "Yes" ]]; then
-            echo "Forced failure."
             echo "success=false" >> $GITHUB_OUTPUT
             exit 0
           fi
@@ -89,8 +80,4 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Notify API
-        env:
-          API_URL: ${{ secrets.API_URL }}
-        run: |
-          curl --max-time 30 "$API_URL"
+      - run: curl --max-time 30 "${{ secrets.API_URL }}"
