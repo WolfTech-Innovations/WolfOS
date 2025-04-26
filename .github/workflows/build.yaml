@@ -46,7 +46,7 @@ jobs:
             -V "WOLFOS" \
             -r -J -quiet \
             iso
-
+          sudo chmod 777 wolfos.iso
           isohybrid wolfos.iso
 
           # Display final ISO size
