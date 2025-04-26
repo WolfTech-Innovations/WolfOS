@@ -604,5 +604,5 @@ gdt_descriptor:
 ; ============================
 ; BOOT SIGNATURE
 ; ============================
-times 510-($-$$) db 0           ; Pad the boot sector with zeros
+times 8048-($-$$) db 0           ; Pad the boot sector with zeros
 dw 0xAA55                       ; Boot signature
