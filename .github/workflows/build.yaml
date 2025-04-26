@@ -29,26 +29,19 @@ jobs:
           # Create an extremely minimal initramfs with maximum compression
           wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
           
-          # Download isolinux config as in original script
-          wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
-          
-          # Copy the essential ISOLINUX files including menu.c32
-          sudo cp /usr/lib/ISOLINUX/isolinux.bin iso/isolinux/
-          sudo cp /usr/lib/syslinux/modules/bios/ldlinux.c32 iso/isolinux/
+          # Download atoboot
+          wget -O iso/isolinux/atoboot.bin https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/atoboot.bin
           
       - name: Create minimal ISO
         run: |
           # Create ISO with minimal options
           sudo genisoimage -o wolfos.iso \
-            -b isolinux/isolinux.bin \
+            -b isolinux/atoboot.bin \
             -c isolinux/boot.cat \
             -no-emul-boot -boot-load-size 4 -boot-info-table \
             -V "WOLFOS" \
             -r -J -quiet \
             iso
-          
-          # Make hybrid but optimize for size
-          sudo isohybrid --id=0x00000000 --type=0x00 wolfos.iso
           
           # Display final ISO size
           ls -lh wolfos.iso
@@ -57,7 +50,7 @@ jobs:
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
-          OSVER: 1
+          OSVER: 2
         run: |
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
       - uses: actions/upload-artifact@v4
