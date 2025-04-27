@@ -24,10 +24,10 @@ jobs:
           mkdir -p iso/isolinux
           mkdir -p iso/boot
           # Use smallest possible kernel
-          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          wget -O iso/boot/bzImage https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/bzImage
           
           # Create an extremely minimal initramfs with maximum compression
-          wget -O iso/boot/initrd.cpio.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.cpio.xz/download
+          wget -O iso/boot/pup.cpio https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/pup.cpio/download
           
           # Download isolinux config as in original script
           wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
@@ -42,7 +42,7 @@ jobs:
           sudo genisoimage -o wolfos.iso \
             -b isolinux/isolinux.bin \
             -c isolinux/boot.cat \
-            -no-emul-boot -boot-load-size 4 -boot-info-table \
+            -no-emul-boot -boot-load-size 2 -boot-info-table \
             -V "WOLFOS" \
             -r -J -quiet \
             iso
