@@ -42,7 +42,7 @@ jobs:
           sudo genisoimage -o wolfos.iso \
             -b isolinux/isolinux.bin \
             -c isolinux/boot.cat \
-            -no-emul-boot -boot-load-size 2 -boot-info-table \
+            -no-emul-boot -boot-load-size 4 -boot-info-table \
             -V "WOLFOS" \
             -r -J -quiet \
             iso
