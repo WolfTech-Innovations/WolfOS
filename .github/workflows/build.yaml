@@ -27,7 +27,7 @@ jobs:
           wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
           # Create an extremely minimal initramfs with maximum compression
-          wget -O iso/boot/pup.cpio https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/pup.cpio/download
+          wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/inird.img.xz/download
           
           # Download isolinux config as in original script
           wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
@@ -56,7 +56,7 @@ jobs:
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
-          OSVER: 1
+          OSVER: 2
         run: |
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
       - uses: actions/upload-artifact@v4
