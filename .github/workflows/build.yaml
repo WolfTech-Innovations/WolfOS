@@ -27,7 +27,7 @@ jobs:
           wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
           # Create an extremely minimal initramfs with maximum compression
-          wget -O iso/boot/initrd.img.xz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.img.xz/download
+          wget -O iso/boot/pup.cpio https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/pup.cpio/download
           
           # Download isolinux config as in original script
           wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
