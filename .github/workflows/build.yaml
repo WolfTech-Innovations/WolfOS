@@ -1,4 +1,4 @@
-name: WolfOS
+name: Build KordOS
 on:
   workflow_dispatch:
     inputs:
@@ -27,8 +27,8 @@ jobs:
           wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
           # Create an extremely minimal initramfs with maximum compression
-          wget -O iso/boot/pup.cpio https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/pup.cpio/download
-          
+          wget -O iso/boot/initrd.gz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.gz/download
+          wget -O iso/puppy_fossapup64_9.6.sfs https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/puppy_fossapup64_9.6.sfs/download
           # Download isolinux config as in original script
           wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
           
@@ -39,19 +39,19 @@ jobs:
       - name: Create minimal ISO
         run: |
           # Create ISO with minimal options
-          sudo genisoimage -o wolfos.iso \
+          sudo genisoimage -o kordos.iso \
             -b isolinux/isolinux.bin \
             -c isolinux/boot.cat \
             -no-emul-boot -boot-load-size 4 -boot-info-table \
             -V "WOLFOS" \
             -r -J -quiet \
             iso
-          sudo chmod 777 wolfos.iso
-          isohybrid wolfos.iso
+          sudo chmod 777 kordos.iso
+          isohybrid kordos.iso
 
           # Display final ISO size
-          ls -lh wolfos.iso
-          du -h wolfos.iso
+          ls -lh kordos.iso
+          du -h kordos.iso
       - name: Upload to SourceForge
         env:
           SF_USER: ${{ secrets.SF_USER }}
@@ -61,8 +61,8 @@ jobs:
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./wolfos.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/WolfOS-v${OSVER}.iso"
       - uses: actions/upload-artifact@v4
         with:
-          name: wolfos-iso
-          path: wolfos.iso
+          name: kordos-iso
+          path: kordos.iso
       - name: Set build status
         id: set-status
         run: |
