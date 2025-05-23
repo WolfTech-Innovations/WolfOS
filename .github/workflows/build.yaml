@@ -19,9 +19,15 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git curl live-build cdebootstrap \
+          sudo apt-get install -y git curl debootstrap \
             debootstrap syslinux-utils isolinux xorriso squashfs-tools \
             mtools rsync sshpass
+
+
+      - name: Install Kali live-build latest
+        run: |
+          wget http://http.kali.org/pool/main/l/live-build/live-build_20230502+kali4_all.deb
+          sudo dpkg -i live-build_20230502+kali4_all.deb || sudo apt-get install -f -y
 
       - name: Clone Kali Live-Build Config
         run: |
