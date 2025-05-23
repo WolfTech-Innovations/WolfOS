@@ -39,23 +39,23 @@ jobs:
       - name: Create minimal ISO
         run: |
           xorriso -as mkisofs   -iso-level 3  -volid "cybr"   -output ./cybr.iso   -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin   -b boot/isolinux/isolinux.bin   -c boot.catalog   -no-emul-boot -boot-load-size 4 -boot-info-table   ./iso
-          sudo chmod 777 kordos.iso
-          isohybrid kordos.iso
+          sudo chmod 777 cybr.iso
+          isohybrid cybr.iso
 
           # Display final ISO size
-          ls -lh kordos.iso
-          du -h kordos.iso
+          ls -lh cybr.iso
+          du -h cybr.iso
       - name: Upload to SourceForge
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
           OSVER: 1
         run: |
-          sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./kordos.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/KordOS-v${OSVER}.iso"
+          sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./cybr.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/KordOS-v${OSVER}.iso"
       - uses: actions/upload-artifact@v4
         with:
-          name: kordos-iso
-          path: kordos.iso
+          name: cybr-iso
+          path: cybr.iso
       - name: Set build status
         id: set-status
         run: |
