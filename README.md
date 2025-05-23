@@ -1,6 +1,6 @@
 [![Build WolfOS](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml/badge.svg)](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml)
 ___
-# Welcome to cybr:
+# Welcome to cybr . . .
 # Or Text (888) 680-2509 (TEXTING ONLY)
 
 ## Installation:
@@ -29,3 +29,4 @@ Happy computing!
 cybr is GPL Licensed and is managed by WolfTech Innovations
 
 [![Copyrighted.com Registered & Protected](https://static.copyrighted.com/badges/125x75/04.png)](https://app.copyrighted.com/work/GW0cSbajaE2ZDg9X "Copyrighted.com Registered & Protected")
+![6Z9kHZ1](https://github.com/user-attachments/assets/44eeeff3-821d-4066-9933-9323d284a394)
