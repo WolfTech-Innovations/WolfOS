@@ -13,42 +13,31 @@ on:
 jobs:
   build-os:
     runs-on: ubuntu-latest
+    container:
+      image: kalilinux/kali-rolling
     outputs:
       build_success: ${{ steps.set-status.outputs.success }}
     steps:
       - name: Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y git curl debootstrap \
-            debootstrap syslinux-utils isolinux xorriso squashfs-tools \
-            mtools rsync sshpass
-
-
-      - name: Install Kali live-build latest
-        run: |
-         echo "deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware" | sudo tee /etc/apt/sources.list.d/kali.list
-         wget -q -O - https://archive.kali.org/archive-key.asc | sudo tee /etc/apt/trusted.gpg.d/kali.asc
-         sudo apt update
-         sudo apt install live-build=1:20230502+kali4
-
-
+          apt update
+          apt install -y git curl debootstrap syslinux-utils isolinux xorriso squashfs-tools mtools rsync sshpass live-build
 
       - name: Clone Kali Live-Build Config
         run: |
           git clone https://gitlab.com/kalilinux/build-scripts/live-build-config.git
           cd live-build-config
-
-          echo 'LB_ISO_IMAGE_NAME="cybr"' | sudo tee -a auto/config
-          echo 'LB_ISO_VOLUME="cybr"' | sudo tee -a auto/config
-          echo 'LB_BUILD_WITH_CHROOT="true"' | sudo tee -a auto/config
-          echo 'LB_COMPRESSION="xz"' | sudo tee -a auto/config
-          echo 'LB_BOOTAPPEND_LIVE="boot=live components hostname=cybr username=root"' | sudo tee -a auto/config
+          echo 'LB_ISO_IMAGE_NAME="cybr"' | tee -a auto/config
+          echo 'LB_ISO_VOLUME="cybr"' | tee -a auto/config
+          echo 'LB_BUILD_WITH_CHROOT="true"' | tee -a auto/config
+          echo 'LB_COMPRESSION="xz"' | tee -a auto/config
+          echo 'LB_BOOTAPPEND_LIVE="boot=live components hostname=cybr username=root"' | tee -a auto/config
 
       - name: Add Custom Packages
         run: |
           cd live-build-config
           mkdir -p config/package-lists
-          echo "lxde lightdm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav netcat wireshark tcpdump nano curl wget" | sudo tee config/package-lists/cybr.list.chroot
+          echo "lxde lightdm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav netcat wireshark tcpdump nano curl wget" | tee config/package-lists/cybr.list.chroot
 
       - name: Add Custom Branding
         run: |
@@ -57,7 +46,16 @@ jobs:
           mkdir -p config/includes.chroot/etc/lightdm
           mkdir -p config/includes.chroot/usr/share/themes/CybrTheme
           mkdir -p config/includes.chroot/usr/share/icons/CybrIcons
-          wget -O config/includes.chroot/usr/share/backgrounds/cybr-wallpaper.jpg https://private-user-images.githubusercontent.com/147162816/447015399-44eeeff3-821d-4066-9933-9323d284a394.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDgwNDM2MTksIm5iZiI6MTc0ODA0MzMxOSwicGF0aCI6Ii8xNDcxNjI4MTYvNDQ3MDE1Mzk5LTQ0ZWVlZmYzLTgyMWQtNDA2Ni05OTMzLTkzMjNkMjg0YTM5NC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNTIzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDUyM1QyMzM1MTlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0wYTMyYWQ0Yzk1OGRjYjI5NzY5NDFhOTI5YjVjYjc2ZjU4Mjg1ODZiZGI2OTE2ZWI4NGI5MDM0NTAyYjQ4OGNkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.G1Z5i3rdfQEIhY6GCOVGNuRzTQFSsP4W6IerOT4qQtE
+          wget -O config/includes.chroot/usr/share/backgrounds/cybr-wallpaper.jpg https://private-user-images.githubusercontent.com/147162816/447015399-44eeeff3-821d-4066-9933-9323d284a394.png
+
+      - name: Configure GRUB and Remove Plymouth
+        run: |
+          cd live-build-config
+          mkdir -p config/includes.chroot/etc/default
+          echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash plymouth.enable=0"' | tee config/includes.chroot/etc/default/grub
+          sed -i 's/quiet splash/quiet/' config/includes.chroot/etc/default/grub
+          sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/s/quiet splash/quiet/' config/includes.chroot/etc/default/grub
+          sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/s/plymouth.enable=0//g' config/includes.chroot/etc/default/grub
 
       - name: Build Cybr ISO
         run: |
