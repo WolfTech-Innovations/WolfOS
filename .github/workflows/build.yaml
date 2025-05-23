@@ -10,223 +10,66 @@ on:
         options: ["No", "Yes"]
 jobs:
   build-os:
-    runs-on: ubuntu-latest
+    runs-on: arch-latest
     outputs:
       build_success: ${{ steps.set-status.outputs.success }}
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Install archiso and dependencies
+      - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y arch-install-scripts squashfs-tools dosfstools libisoburn1 sshpass xz-utils
-          
-          # Download and install archiso from AUR equivalent
+          sudo pacman -S archiso
+          mkdir ~/archiso
+          cp -r /usr/share/archiso/configs/releng/ ~/archiso/cybr
+          cd ~/archiso/cybr
+
+
+      - name: Setup build structure
+        run: |
+          cd  ~/archiso/cybr
+          echo '#!/usr/bin/env bash' > profiledef.sh && echo 'iso_name="cybr"' >> profiledef.sh && echo 'iso_label="CYBR_$(date +%Y%m)"' >> profiledef.sh && echo 'iso_publisher="CYBR Linux"' >> profiledef.sh && echo 'iso_application="CYBR Linux Live CD"' >> profiledef.sh && echo 'iso_version="$(date +%Y.%m.%d)"' >> profiledef.sh && echo 'install_dir="cybr"' >> profiledef.sh && echo 'buildmodes=("iso")' >> profiledef.sh && echo 'bootmodes=("bios.syslinux.mbr" "uefi-x64.systemd-boot.esp")' >> profiledef.sh && echo 'arch="x86_64"' >> profiledef.sh && echo 'pacman_conf="pacman.conf"' >> profiledef.sh && echo 'airootfs_image_type="squashfs"' >> profiledef.sh
+          echo "Welcome to CYBR - Arch Cybersecurity Linux Distribution" > airootfs/etc/motd
+          echo 'NAME="CYBR Linux"' > airootfs/etc/os-release && echo 'PRETTY_NAME="CYBR Linux"' >> airootfs/etc/os-release && echo 'ID=cybr' >> airootfs/etc/os-release && echo 'VERSION="1.0"' >> airootfs/etc/os-release && echo 'VERSION_ID=1.0' >> airootfs/etc/os-release && echo 'HOME_URL="https://wolfos.uk"' >> airootfs/etc/os-release && echo 'SUPPORT_URL="https://wolfos.uk"' >> airootfs/etc/os-release && echo 'BUG_REPORT_URL="https://wolfos.uk"' >> airootfs/etc/os-release && echo 'LOGO=archlinux' >> airootfs/etc/os-release
+          cp /etc/pacman.conf pacman.conf
+          echo '' >> pacman.conf && echo '[blackarch]' >> pacman.conf && echo 'SigLevel = Optional TrustAll' >> pacman.conf && echo 'Server = https://mirror.blackarch.org/$repo/os/$arch' >> pacman.conf
+          echo 'base' > packages.x86_64 && echo 'base-devel' >> packages.x86_64 && echo 'linux' >> packages.x86_64 && echo 'linux-firmware' >> packages.x86_64 && echo 'systemd' >> packages.x86_64 && echo 'networkmanager' >> packages.x86_64 && echo 'xorg-server' >> packages.x86_64 && echo 'xorg-apps' >> packages.x86_64 && echo 'lxde-gtk3' >>  packages.x86_64 && echo 'sddm' >> packages.x86_64 && echo 'firefox' >> packages.x86_64 && echo 'git' >> packages.x86_64 && echo 'vim' >> packages.x86_64 && echo 'nano' >> packages.x86_64 && echo 'htop' >> packages.x86_64 && echo 'neofetch' >> packages.x86_64 && echo 'blackarch-exploting' >> packages.x86_64
+      - name: Create customization
+        run: |
+          cd cybr
+          curl -o airootfs/root/strap.sh https://blackarch.org/strap.sh
+          chmod +x airootfs/root/strap.sh
+          echo '#!/bin/bash' > airootfs/root/customize_airootfs.sh && echo 'set -e -u' >> airootfs/root/customize_airootfs.sh && echo 'systemctl enable NetworkManager' >> airootfs/root/customize_airootfs.sh && echo 'systemctl enable sddm' >> airootfs/root/customize_airootfs.sh && echo 'sed -i "s/#en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen' >> airootfs/root/customize_airootfs.sh && echo 'locale-gen' >> airootfs/root/customize_airootfs.sh && echo 'echo "LANG=en_US.UTF-8" > /etc/locale.conf' >> airootfs/root/customize_airootfs.sh && echo 'ln -sf /usr/share/zoneinfo/UTC /etc/localtime' >> airootfs/root/customize_airootfs.sh && echo 'if [ -f /root/strap.sh ]; then bash /root/strap.sh || echo "BlackArch failed"; fi' >> airootfs/root/customize_airootfs.sh
+          chmod +x airootfs/root/customize_airootfs.sh
+      - name: Build ISO
+        run: |
+          cd cybr
           wget https://github.com/archlinux/archiso/archive/refs/heads/master.zip
           unzip master.zip
           cd archiso-master
           sudo make install
-          cd ..
-          
-      - name: Setup archiso build structure
-        run: |
-          mkdir cybr && cd cybr
-          
-          # Copy releng profile as base
-          cp -r /usr/share/archiso/configs/releng/* . 2>/dev/null || {
-            # Fallback: create basic structure manually
-            mkdir -p {airootfs/etc,airootfs/root,efiboot/loader/entries,syslinux}
-            
-            # Create basic profiledef.sh
-            cat <<'EOF' > profiledef.sh
-#!/usr/bin/env bash
-iso_name="cybr"
-iso_label="CYBR_$(date +%Y%m)"
-iso_publisher="CYBR Linux <https://wolfos.uk>"
-iso_application="CYBR Linux Live/Rescue CD"
-iso_version="$(date +%Y.%m.%d)"
-install_dir="cybr"
-buildmodes=('iso')
-bootmodes=('bios.syslinux.mbr' 'bios.syslinux.eltorito' 'uefi-x64.systemd-boot.esp' 'uefi-x64.systemd-boot.eltorito')
-arch="x86_64"
-pacman_conf="pacman.conf"
-airootfs_image_type="squashfs"
-airootfs_image_tool_options=('-comp' 'xz' '-Xbcj' 'x86' '-b' '1M' '-Xdict-size' '1M')
-file_permissions=(
-  ["/etc/shadow"]="0:0:400"
-  ["/root"]="0:0:750"
-  ["/root/.automated_script.sh"]="0:0:755"
-  ["/usr/local/bin/choose-mirror"]="0:0:755"
-  ["/usr/local/bin/Installation_guide"]="0:0:755"
-  ["/usr/local/bin/livecd-sound"]="0:0:755"
-)
-EOF
-          }
-          
-      - name: Configure CYBR customizations
-        run: |
-          cd cybr
-          
-          # Create custom motd
-          mkdir -p airootfs/etc
-          echo "Welcome to CYBR - Arch Cybersecurity Linux Distribution" > airootfs/etc/motd
-          
-          # Create os-release
-          cat <<'EOF' > airootfs/etc/os-release
-NAME="CYBR Linux"
-PRETTY_NAME="CYBR Linux"
-ID=cybr
-VERSION="1.0"
-VERSION_ID=1.0
-HOME_URL="https://wolfos.uk"
-SUPPORT_URL="https://wolfos.uk"
-BUG_REPORT_URL="https://wolfos.uk"
-LOGO=archlinux
-EOF
-          
-          # Create or update pacman.conf
-          if [ ! -f pacman.conf ]; then
-            cp /etc/pacman.conf pacman.conf
-          fi
-          
-          # Add BlackArch repository
-          cat <<'EOF' >> pacman.conf
-
-[blackarch]
-SigLevel = Optional TrustAll
-Server = https://mirror.blackarch.org/$repo/os/$arch
-EOF
-          
-          # Create packages list
-          cat <<'EOF' > packages.x86_64
-base
-base-devel
-linux
-linux-firmware
-systemd
-networkmanager
-xorg-server
-xorg-apps
-lxde-gtk3
-sddm
-firefox
-git
-vim
-nano
-htop
-neofetch
-EOF
-          
-      - name: Create customization script
-        run: |
-          cd cybr
-          mkdir -p airootfs/root
-          
-          # Download BlackArch bootstrap script
-          curl -o airootfs/root/strap.sh https://blackarch.org/strap.sh
-          chmod +x airootfs/root/strap.sh
-          
-          # Create main customization script
-          cat <<'EOF' > airootfs/root/customize_airootfs.sh
-#!/bin/bash
-set -e -u
-
-# Enable services
-systemctl enable NetworkManager
-systemctl enable sddm
-
-# Configure locale
-sed -i 's/#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen
-locale-gen
-echo 'LANG=en_US.UTF-8' > /etc/locale.conf
-
-# Set timezone
-ln -sf /usr/share/zoneinfo/UTC /etc/localtime
-
-# Install BlackArch tools (basic set)
-if [ -f /root/strap.sh ]; then
-    echo "Installing BlackArch repository..."
-    bash /root/strap.sh || echo "BlackArch installation failed, continuing..."
-fi
-
-echo "CYBR Linux customization completed"
-EOF
-          chmod +x airootfs/root/customize_airootfs.sh
-          
-      - name: Build CYBR ISO
-        run: |
-          cd cybr
-          
-          # Build the ISO
-          sudo mkarchiso -v -w ./work -o ../out . || {
-            echo "mkarchiso failed, trying alternative build method..."
-            
-            # Alternative: use archiso from git
-            cd ..
-            git clone https://gitlab.archlinux.org/archlinux/archiso.git
-            cd archiso
-            sudo make install
-            cd ../cybr
-            sudo /usr/local/bin/mkarchiso -v -w ./work -o ../out .
-          }
-          
-      - name: List generated files
-        run: |
-          echo "Generated ISO files:"
-          ls -la out/ || echo "No output directory found"
-          
-      - name: Upload ISO artifact
-        if: success()
+          cd ../
+          sudo /usr/local/bin/mkarchiso -v -w ./work -o ../out .
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: cybr-linux-iso
           path: out/*.iso
           retention-days: 30
-          
       - name: Upload to SourceForge
-        if: success() && secrets.SF_USER != '' && secrets.SF_PASS != ''
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
         run: |
-          echo "Uploading to SourceForge..."
-          sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ./out/*.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/cybrlinux/releases/" || {
-            echo "SourceForge upload failed, but continuing..."
-          }
-          
+          if [ -n "$SF_USER" ] && [ -n "$SF_PASS" ]; then sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./out/*.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/cybrlinux/releases/"; fi
       - name: Set build status
         id: set-status
-        if: always()
         run: |
-          if [[ "${{ github.event.inputs.force_fail }}" == "Yes" ]]; then
-            echo "success=false" >> $GITHUB_OUTPUT
-            echo "Build forced to fail for testing"
-            exit 0
-          fi
-          
-          if [ -f out/*.iso ]; then
-            echo "success=true" >> $GITHUB_OUTPUT
-            echo "Build completed successfully"
-          else
-            echo "success=false" >> $GITHUB_OUTPUT
-            echo "Build failed - no ISO generated"
-          fi
-          
+          if [[ "${{ github.event.inputs.force_fail }}" == "Yes" ]]; then echo "success=false" >> $GITHUB_OUTPUT && exit 0; fi
+          if ls out/*.iso 1>/dev/null 2>&1; then echo "success=true" >> $GITHUB_OUTPUT; else echo "success=false" >> $GITHUB_OUTPUT; fi
   notify-api:
     needs: build-os
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Notify API endpoint
+      - name: Notify API
         run: |
-          BUILD_STATUS="${{ needs.build-os.outputs.build_success }}"
-          echo "Notifying API with build status: $BUILD_STATUS"
-          
-          curl --max-time 30 \
-               --fail-with-body \
-               --header "Content-Type: application/json" \
-               --data "{\"build_status\":\"$BUILD_STATUS\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" \
-               "${{ secrets.API_URL }}" || {
-            echo "API notification failed, but job will continue"
-            exit 0
-          }
+          curl --max-time 30 --header "Content-Type: application/json" --data "{\"build_status\":\"${{ needs.build-os.outputs.build_success }}\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" "${{ secrets.API_URL }}"
