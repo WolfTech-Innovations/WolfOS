@@ -26,8 +26,12 @@ jobs:
 
       - name: Install Kali live-build latest
         run: |
-          wget http://http.kali.org/pool/main/l/live-build/live-build_20230502+kali4_all.deb
-          sudo dpkg -i live-build_20230502+kali4_all.deb || sudo apt-get install -f -y
+         echo "deb http://http.kali.org/kali kali-rolling main contrib non-free non-free-firmware" | sudo tee /etc/apt/sources.list.d/kali.list
+         wget -q -O - https://archive.kali.org/archive-key.asc | sudo tee /etc/apt/trusted.gpg.d/kali.asc
+         sudo apt update
+         sudo apt install live-build=1:20230502+kali4
+
+
 
       - name: Clone Kali Live-Build Config
         run: |
