@@ -23,12 +23,14 @@ jobs:
         run: |
           mkdir -p iso/isolinux
           mkdir -p iso/boot
+          mkdir -p iso/arch/boot/x86_64
+          mkdir iso/arch/x86_64
           # Use smallest possible kernel
           wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
           
           # Create an extremely minimal initramfs with maximum compression
-          wget -O iso/boot/initrd.cpio https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.cpio/download
-          wget -O iso/puppy_fossapup64_9.6.sfs https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/puppy_fossapup64_9.6.sfs/download
+          wget -O iso/arch/boot/x86_64/initramfs.img https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initramfs.img/download
+          wget -O iso/arch/x86_64/airoot.sfs https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/airoot.sfs/download
           # Download isolinux config as in original script
           wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
           
