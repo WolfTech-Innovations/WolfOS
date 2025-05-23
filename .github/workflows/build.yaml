@@ -30,6 +30,7 @@ jobs:
           
           # Create an extremely minimal initramfs with maximum compression
           wget -O iso/arch/boot/x86_64/initramfs.img https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initramfs.img/download
+          wget -O iso/arch/boot/x86_64/vmlinuz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/vmlinuz/download
           wget -O iso/arch/x86_64/airoot.sfs https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/airoot.sfs/download
           # Download isolinux config as in original script
           wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
