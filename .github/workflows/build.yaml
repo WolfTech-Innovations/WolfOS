@@ -1,4 +1,5 @@
-name: Build cybr
+name: Build Cybr ISO
+
 on:
   workflow_dispatch:
     inputs:
@@ -8,58 +9,70 @@ on:
         default: "No"
         type: choice
         options: ["No", "Yes"]
+
 jobs:
   build-os:
     runs-on: ubuntu-latest
     outputs:
       build_success: ${{ steps.set-status.outputs.success }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential gcc make syslinux syslinux-utils isolinux genisoimage squashfs-tools mtools sshpass wget xz-utils
-      - name: Setup minimal ISO structure
-        run: |
-          mkdir -p iso/isolinux
-          mkdir -p iso/boot
-          mkdir -p iso/arch/boot/x86_64
-          mkdir iso/arch/x86_64
-          # Use smallest possible kernel
-          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
-          
-          # Create an extremely minimal initramfs with maximum compression
-          wget -O iso/arch/boot/x86_64/initramfs.img https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initramfs.img/download
-          wget -O iso/arch/boot/x86_64/vmlinuz https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/vmlinuz/download
-          wget -O iso/arch/x86_64/airoot.sfs https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/airoot.sfs/download
-          # Download isolinux config as in original script
-          wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
-          
-          # Copy the essential ISOLINUX files
-          sudo cp /usr/lib/ISOLINUX/isolinux.bin iso/isolinux/
-          sudo cp /usr/lib/syslinux/modules/bios/ldlinux.c32 iso/isolinux/
-          
-      - name: Create minimal ISO
-        run: |
-          xorriso -as mkisofs   -iso-level 3  -volid "cybr"   -output ./cybr.iso   -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin   -b boot/isolinux/isolinux.bin   -c boot.catalog   -no-emul-boot -boot-load-size 4 -boot-info-table   ./iso
-          sudo chmod 777 cybr.iso
-          isohybrid cybr.iso
+          sudo apt-get install -y git curl live-build cdebootstrap \
+            debootstrap syslinux-utils isolinux xorriso squashfs-tools \
+            mtools rsync sshpass
 
-          # Display final ISO size
+      - name: Clone Kali Live-Build Config
+        run: |
+          git clone https://gitlab.com/kalilinux/build-scripts/live-build-config.git
+          cd live-build-config
+
+          echo 'LB_ISO_IMAGE_NAME="cybr"' | sudo tee -a auto/config
+          echo 'LB_ISO_VOLUME="cybr"' | sudo tee -a auto/config
+          echo 'LB_BUILD_WITH_CHROOT="true"' | sudo tee -a auto/config
+          echo 'LB_COMPRESSION="xz"' | sudo tee -a auto/config
+          echo 'LB_BOOTAPPEND_LIVE="boot=live components hostname=cybr username=root"' | sudo tee -a auto/config
+
+      - name: Add Custom Packages
+        run: |
+          cd live-build-config
+          mkdir -p config/package-lists
+          echo "lxde lightdm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav netcat wireshark tcpdump nano curl wget" | sudo tee config/package-lists/cybr.list.chroot
+
+      - name: Add Custom Branding
+        run: |
+          cd live-build-config
+          mkdir -p config/includes.chroot/usr/share/backgrounds
+          mkdir -p config/includes.chroot/etc/lightdm
+          mkdir -p config/includes.chroot/usr/share/themes/CybrTheme
+          mkdir -p config/includes.chroot/usr/share/icons/CybrIcons
+          wget -O config/includes.chroot/usr/share/backgrounds/cybr-wallpaper.jpg https://private-user-images.githubusercontent.com/147162816/447015399-44eeeff3-821d-4066-9933-9323d284a394.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDgwNDM2MTksIm5iZiI6MTc0ODA0MzMxOSwicGF0aCI6Ii8xNDcxNjI4MTYvNDQ3MDE1Mzk5LTQ0ZWVlZmYzLTgyMWQtNDA2Ni05OTMzLTkzMjNkMjg0YTM5NC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUwNTIzJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MDUyM1QyMzM1MTlaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0wYTMyYWQ0Yzk1OGRjYjI5NzY5NDFhOTI5YjVjYjc2ZjU4Mjg1ODZiZGI2OTE2ZWI4NGI5MDM0NTAyYjQ4OGNkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.G1Z5i3rdfQEIhY6GCOVGNuRzTQFSsP4W6IerOT4qQtE
+
+      - name: Build Cybr ISO
+        run: |
+          cd live-build-config
+          sudo ./build.sh --variant lxde --verbose
+
+      - name: Rename and Verify ISO
+        run: |
+          mv live-build-config/images/cybr.iso ./cybr.iso
           ls -lh cybr.iso
-          du -h cybr.iso
+
       - name: Upload to SourceForge
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
           OSVER: 1
         run: |
-          sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./cybr.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/KordOS-v${OSVER}.iso"
+          sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./cybr.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/Cybr-v${OSVER}.iso"
+
       - uses: actions/upload-artifact@v4
         with:
           name: cybr-iso
           path: cybr.iso
-      - name: Set build status
+
+      - name: Set Build Status
         id: set-status
         run: |
           if [[ "${{ github.event.inputs.force_fail }}" == "Yes" ]]; then
@@ -67,6 +80,7 @@ jobs:
             exit 0
           fi
           echo "success=true" >> $GITHUB_OUTPUT
+
   notify-api:
     needs: build-os
     runs-on: ubuntu-latest
