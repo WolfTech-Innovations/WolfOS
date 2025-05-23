@@ -1,4 +1,4 @@
-name: Build KordOS
+name: Build cybr
 on:
   workflow_dispatch:
     inputs:
