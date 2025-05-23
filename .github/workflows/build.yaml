@@ -37,17 +37,16 @@ jobs:
         run: |
           cd live-build-config
           mkdir -p config/package-lists
-          echo "lxde lightdm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav netcat wireshark tcpdump nano curl wget" | tee config/package-lists/cybr.list.chroot
+          echo "kde-plasma sddm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav netcat wireshark tcpdump nano curl wget neofetch cowsay beef wine" | tee config/package-lists/cybr.list.chroot
 
       - name: Add Custom Branding
         run: |
           cd live-build-config
           mkdir -p config/includes.chroot/usr/share/backgrounds
-          mkdir -p config/includes.chroot/etc/lightdm
+          mkdir -p config/includes.chroot/etc/sddm
           mkdir -p config/includes.chroot/usr/share/themes/CybrTheme
           mkdir -p config/includes.chroot/usr/share/icons/CybrIcons
-          wget -O config/includes.chroot/usr/share/backgrounds/cybr-wallpaper.jpg https://private-user-images.githubusercontent.com/147162816/447015399-44eeeff3-821d-4066-9933-9323d284a394.png
-
+          
       - name: Configure GRUB and Remove Plymouth
         run: |
           cd live-build-config
@@ -60,7 +59,7 @@ jobs:
       - name: Build Cybr ISO
         run: |
           cd live-build-config
-          sudo ./build.sh --variant lxde --verbose
+          sudo ./build.sh --variant plasma --verbose
 
       - name: Rename and Verify ISO
         run: |
