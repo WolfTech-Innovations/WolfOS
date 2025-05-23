@@ -1,4 +1,4 @@
-name: Build CYBR Linux ISO
+name: Build KordOS
 on:
   workflow_dispatch:
     inputs:
@@ -10,66 +10,70 @@ on:
         options: ["No", "Yes"]
 jobs:
   build-os:
-    runs-on: arch-latest
+    runs-on: ubuntu-latest
     outputs:
       build_success: ${{ steps.set-status.outputs.success }}
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
         run: |
-          sudo pacman -S archiso
-          mkdir ~/archiso
-          cp -r /usr/share/archiso/configs/releng/ ~/archiso/cybr
-          cd ~/archiso/cybr
+          sudo apt-get update
+          sudo apt-get install -y build-essential gcc make syslinux syslinux-utils isolinux genisoimage squashfs-tools mtools sshpass wget xz-utils
+      - name: Setup minimal ISO structure
+        run: |
+          mkdir -p iso/isolinux
+          mkdir -p iso/boot
+          # Use smallest possible kernel
+          wget -O iso/boot/vmlinuz https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/vmlinuz
+          
+          # Create an extremely minimal initramfs with maximum compression
+          wget -O iso/boot/initrd.cpio https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/initrd.cpio/download
+          wget -O iso/puppy_fossapup64_9.6.sfs https://sourceforge.net/projects/wolfos/files/initramfs-compressed-source/puppy_fossapup64_9.6.sfs/download
+          # Download isolinux config as in original script
+          wget -O iso/isolinux/isolinux.cfg https://raw.githubusercontent.com/WolfTech-Innovations/WLFBUILD-RESOURCE/main/isolinux.cfg
+          
+          # Copy the essential ISOLINUX files
+          sudo cp /usr/lib/ISOLINUX/isolinux.bin iso/isolinux/
+          sudo cp /usr/lib/syslinux/modules/bios/ldlinux.c32 iso/isolinux/
+          
+      - name: Create minimal ISO
+        run: |
+          # Create ISO with minimal options
+          sudo genisoimage -o kordos.iso \
+            -b isolinux/isolinux.bin \
+            -c isolinux/boot.cat \
+            -no-emul-boot -boot-load-size 4 -boot-info-table \
+            -V "WOLFOS" \
+            -r -J -quiet \
+            iso
+          sudo chmod 777 kordos.iso
+          isohybrid kordos.iso
 
-
-      - name: Setup build structure
-        run: |
-          cd  ~/archiso/cybr
-          echo '#!/usr/bin/env bash' > profiledef.sh && echo 'iso_name="cybr"' >> profiledef.sh && echo 'iso_label="CYBR_$(date +%Y%m)"' >> profiledef.sh && echo 'iso_publisher="CYBR Linux"' >> profiledef.sh && echo 'iso_application="CYBR Linux Live CD"' >> profiledef.sh && echo 'iso_version="$(date +%Y.%m.%d)"' >> profiledef.sh && echo 'install_dir="cybr"' >> profiledef.sh && echo 'buildmodes=("iso")' >> profiledef.sh && echo 'bootmodes=("bios.syslinux.mbr" "uefi-x64.systemd-boot.esp")' >> profiledef.sh && echo 'arch="x86_64"' >> profiledef.sh && echo 'pacman_conf="pacman.conf"' >> profiledef.sh && echo 'airootfs_image_type="squashfs"' >> profiledef.sh
-          echo "Welcome to CYBR - Arch Cybersecurity Linux Distribution" > airootfs/etc/motd
-          echo 'NAME="CYBR Linux"' > airootfs/etc/os-release && echo 'PRETTY_NAME="CYBR Linux"' >> airootfs/etc/os-release && echo 'ID=cybr' >> airootfs/etc/os-release && echo 'VERSION="1.0"' >> airootfs/etc/os-release && echo 'VERSION_ID=1.0' >> airootfs/etc/os-release && echo 'HOME_URL="https://wolfos.uk"' >> airootfs/etc/os-release && echo 'SUPPORT_URL="https://wolfos.uk"' >> airootfs/etc/os-release && echo 'BUG_REPORT_URL="https://wolfos.uk"' >> airootfs/etc/os-release && echo 'LOGO=archlinux' >> airootfs/etc/os-release
-          cp /etc/pacman.conf pacman.conf
-          echo '' >> pacman.conf && echo '[blackarch]' >> pacman.conf && echo 'SigLevel = Optional TrustAll' >> pacman.conf && echo 'Server = https://mirror.blackarch.org/$repo/os/$arch' >> pacman.conf
-          echo 'base' > packages.x86_64 && echo 'base-devel' >> packages.x86_64 && echo 'linux' >> packages.x86_64 && echo 'linux-firmware' >> packages.x86_64 && echo 'systemd' >> packages.x86_64 && echo 'networkmanager' >> packages.x86_64 && echo 'xorg-server' >> packages.x86_64 && echo 'xorg-apps' >> packages.x86_64 && echo 'lxde-gtk3' >>  packages.x86_64 && echo 'sddm' >> packages.x86_64 && echo 'firefox' >> packages.x86_64 && echo 'git' >> packages.x86_64 && echo 'vim' >> packages.x86_64 && echo 'nano' >> packages.x86_64 && echo 'htop' >> packages.x86_64 && echo 'neofetch' >> packages.x86_64 && echo 'blackarch-exploting' >> packages.x86_64
-      - name: Create customization
-        run: |
-          cd cybr
-          curl -o airootfs/root/strap.sh https://blackarch.org/strap.sh
-          chmod +x airootfs/root/strap.sh
-          echo '#!/bin/bash' > airootfs/root/customize_airootfs.sh && echo 'set -e -u' >> airootfs/root/customize_airootfs.sh && echo 'systemctl enable NetworkManager' >> airootfs/root/customize_airootfs.sh && echo 'systemctl enable sddm' >> airootfs/root/customize_airootfs.sh && echo 'sed -i "s/#en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen' >> airootfs/root/customize_airootfs.sh && echo 'locale-gen' >> airootfs/root/customize_airootfs.sh && echo 'echo "LANG=en_US.UTF-8" > /etc/locale.conf' >> airootfs/root/customize_airootfs.sh && echo 'ln -sf /usr/share/zoneinfo/UTC /etc/localtime' >> airootfs/root/customize_airootfs.sh && echo 'if [ -f /root/strap.sh ]; then bash /root/strap.sh || echo "BlackArch failed"; fi' >> airootfs/root/customize_airootfs.sh
-          chmod +x airootfs/root/customize_airootfs.sh
-      - name: Build ISO
-        run: |
-          cd cybr
-          wget https://github.com/archlinux/archiso/archive/refs/heads/master.zip
-          unzip master.zip
-          cd archiso-master
-          sudo make install
-          cd ../
-          sudo /usr/local/bin/mkarchiso -v -w ./work -o ../out .
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: cybr-linux-iso
-          path: out/*.iso
-          retention-days: 30
+          # Display final ISO size
+          ls -lh kordos.iso
+          du -h kordos.iso
       - name: Upload to SourceForge
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
+          OSVER: 1
         run: |
-          if [ -n "$SF_USER" ] && [ -n "$SF_PASS" ]; then sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./out/*.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/cybrlinux/releases/"; fi
+          sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./kordos.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/KordOS-v${OSVER}.iso"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kordos-iso
+          path: kordos.iso
       - name: Set build status
         id: set-status
         run: |
-          if [[ "${{ github.event.inputs.force_fail }}" == "Yes" ]]; then echo "success=false" >> $GITHUB_OUTPUT && exit 0; fi
-          if ls out/*.iso 1>/dev/null 2>&1; then echo "success=true" >> $GITHUB_OUTPUT; else echo "success=false" >> $GITHUB_OUTPUT; fi
+          if [[ "${{ github.event.inputs.force_fail }}" == "Yes" ]]; then
+            echo "success=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "success=true" >> $GITHUB_OUTPUT
   notify-api:
     needs: build-os
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Notify API
-        run: |
-          curl --max-time 30 --header "Content-Type: application/json" --data "{\"build_status\":\"${{ needs.build-os.outputs.build_success }}\",\"timestamp\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" "${{ secrets.API_URL }}"
+      - run: curl --max-time 30 "${{ secrets.API_URL }}"
