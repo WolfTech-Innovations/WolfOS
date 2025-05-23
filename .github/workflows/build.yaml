@@ -38,14 +38,7 @@ jobs:
           
       - name: Create minimal ISO
         run: |
-          # Create ISO with minimal options
-          sudo genisoimage -o kordos.iso \
-            -b isolinux/isolinux.bin \
-            -c isolinux/boot.cat \
-            -no-emul-boot -boot-load-size 4 -boot-info-table \
-            -V "WOLFOS" \
-            -r -J -quiet \
-            iso
+          xorriso -as mkisofs   -iso-level 3  -volid "cybr"   -output ./cybr.iso   -isohybrid-mbr /usr/lib/ISOLINUX/isohdpfx.bin   -b boot/isolinux/isolinux.bin   -c boot.catalog   -no-emul-boot -boot-load-size 4 -boot-info-table   ./iso
           sudo chmod 777 kordos.iso
           isohybrid kordos.iso
 
