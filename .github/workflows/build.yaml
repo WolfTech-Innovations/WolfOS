@@ -59,7 +59,7 @@ jobs:
       - name: Build Cybr ISO
         run: |
           cd live-build-config
-          sh ./build.sh --variant plasma --verbose
+          bash ./build.sh --variant plasma --verbose
 
       - name: Rename and Verify ISO
         run: |
