@@ -61,7 +61,7 @@ jobs:
 
       - name: Rename and Verify ISO
         run: |
-          mv live-build-config/images/cybr.iso ./cybr.iso
+          mv live-build-config/images/kali-linux-rolling-live-plasma-amd64.iso ./cybr.iso
           ls -lh cybr.iso
 
       - name: Upload to SourceForge
