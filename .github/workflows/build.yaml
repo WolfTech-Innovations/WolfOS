@@ -35,7 +35,7 @@ jobs:
         run: |
           cd live-build-config
           mkdir -p config/package-lists
-          echo "kde-plasma sddm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav netcat wireshark tcpdump nano curl wget neofetch cowsay beef wine" | tee config/package-lists/cybr.list.chroot
+          echo "plasma-desktop sddm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav wireshark tcpdump nano curl wget cowsay beef wine" | tee config/package-lists/cybr.list.chroot
 
       - name: Add Custom Branding
         run: |
