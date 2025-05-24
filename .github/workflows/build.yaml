@@ -13,8 +13,6 @@ on:
 jobs:
   build-os:
     runs-on: self-hosted
-    container:
-      image: kalilinux/kali-rolling
     outputs:
       build_success: ${{ steps.set-status.outputs.success }}
     steps:
