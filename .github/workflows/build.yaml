@@ -18,8 +18,8 @@ jobs:
     steps:
       - name: Install Dependencies
         run: |
-          apt update
-          apt install -y git curl debootstrap syslinux-utils isolinux xorriso squashfs-tools mtools rsync sshpass live-build
+          sudo apt update
+          sudo apt install -y git curl debootstrap syslinux-utils isolinux xorriso squashfs-tools mtools rsync sshpass live-build
 
       - name: Clone Kali Live-Build Config
         run: |
