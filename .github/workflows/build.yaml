@@ -57,11 +57,11 @@ jobs:
       - name: Build Cybr ISO
         run: |
           cd live-build-config
-          bash ./build.sh --variant plasma --verbose
+          bash ./build.sh --variant minimal --verbose
 
       - name: Rename and Verify ISO
         run: |
-          mv live-build-config/images/kali-linux-rolling-live-plasma-amd64.iso ./cybr.iso
+          mv live-build-config/images/kali-linux-rolling-live-minimal-amd64.iso ./cybr.iso
           ls -lh cybr.iso
 
       - name: Upload to SourceForge
