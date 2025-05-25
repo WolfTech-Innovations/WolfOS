@@ -231,7 +231,7 @@ jobs:
       - name: Build Cybr ISO
         run: |
           cd live-build-config
-          bash ./build.sh --variant minimal --verbose --iso-application cybr --iso-publisher WolfTech Innovations --iso-volume cybr
+          bash ./build.sh --variant minimal --verbose
 
       - name: Post-Build ISO Modifications
         run: |
