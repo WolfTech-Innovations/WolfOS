@@ -1,5 +1,4 @@
 name: Build Cybr ISO
-
 on:
   workflow_dispatch:
     inputs:
@@ -9,7 +8,6 @@ on:
         default: "No"
         type: choice
         options: ["No", "Yes"]
-
 jobs:
   build-os:
     runs-on: self-hosted
@@ -20,10 +18,14 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y git curl debootstrap syslinux-utils isolinux xorriso squashfs-tools mtools rsync sshpass live-build
-
+      
       - name: Clone Kali Live-Build Config
         run: |
           git clone https://gitlab.com/kalilinux/build-scripts/live-build-config.git
+          cd live-build-config
+          
+      - name: Configure Build Parameters
+        run: |
           cd live-build-config
           echo 'LB_ISO_IMAGE_NAME="cybr"' | tee -a auto/config
           echo 'LB_ISO_VOLUME="cybr"' | tee -a auto/config
@@ -35,9 +37,188 @@ jobs:
         run: |
           cd live-build-config
           mkdir -p config/package-lists
-          echo "plasma-desktop sddm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav wireshark tcpdump nano curl wget cowsay beef wine" | tee config/package-lists/cybr.list.chroot
+          echo "plasma-desktop sddm nmap iptables ufw fail2ban clamav wireshark hydra cewl nano curl wget git" | tee config/package-lists/cybr.list.chroot
 
-      - name: Add Custom Branding
+      - name: Create OS Release Branding Hook
+        run: |
+          cd live-build-config
+          mkdir -p config/hooks/normal
+          cat > config/hooks/normal/0010-cybr-branding.hook.chroot << 'EOF'
+          #!/bin/bash
+          set -e
+          
+          # Update os-release file
+          cat > /etc/os-release << 'OSEOF'
+          PRETTY_NAME="cybr"
+          NAME="cybr"
+          VERSION_ID="rolling"
+          VERSION="rolling"
+          VERSION_CODENAME=cybr
+          ID=cybr
+          ID_LIKE=debian
+          HOME_URL="https://cybr.org/"
+          SUPPORT_URL="https://cybr.org/support"
+          BUG_REPORT_URL="https://cybr.org/bugs"
+          ANSI_COLOR="1;31"
+          OSEOF
+          
+          # Update lsb-release file
+          cat > /etc/lsb-release << 'LSBEOF'
+          DISTRIB_ID=cybr
+          DISTRIB_RELEASE=rolling
+          DISTRIB_CODENAME=cybr
+          DISTRIB_DESCRIPTION="cybr rolling"
+          LSBEOF
+          
+          # Update issue files
+          echo "cybr \\n \\l" > /etc/issue
+          echo "cybr" > /etc/issue.net
+          
+          # Update hostname
+          echo "cybr" > /etc/hostname
+          
+          # Update hosts file
+          sed -i 's/kali/cybr/g' /etc/hosts 2>/dev/null || true
+          echo "127.0.1.1    cybr" >> /etc/hosts
+          
+          # Update motd
+          cat > /etc/motd << 'MOTDEOF'
+          
+          Welcome to cybr - Security-Focused Linux Distribution
+          
+          MOTDEOF
+          
+          # Update desktop files and branding
+          find /usr/share/applications -name "*.desktop" -exec sed -i 's/Kali/cybr/g; s/kali/cybr/g' {} \; 2>/dev/null || true
+          
+          # Update any remaining Kali references
+          find /etc -type f -name "*.conf" -exec sed -i 's/kali/cybr/g; s/Kali/cybr/g' {} \; 2>/dev/null || true
+          
+          # Update default user shell prompt
+          if [ -f /etc/bash.bashrc ]; then
+              sed -i 's/kali/cybr/g; s/Kali/cybr/g' /etc/bash.bashrc
+          fi
+          
+          # Update any package manager sources that reference kali
+          if [ -f /etc/apt/sources.list ]; then
+              sed -i 's/kali-rolling/cybr-rolling/g' /etc/apt/sources.list
+          fi
+          
+          EOF
+          chmod +x config/hooks/normal/0010-cybr-branding.hook.chroot
+
+      - name: Create GRUB Branding Hook
+        run: |
+          cd live-build-config
+          cat > config/hooks/normal/0020-grub-branding.hook.chroot << 'EOF'
+          #!/bin/bash
+          set -e
+          
+          # Update GRUB configuration
+          cat > /etc/default/grub << 'GRUBEOF'
+          GRUB_DEFAULT=0
+          GRUB_TIMEOUT=5
+          GRUB_DISTRIBUTOR="cybr"
+          GRUB_CMDLINE_LINUX_DEFAULT="quiet"
+          GRUB_CMDLINE_LINUX=""
+          GRUB_TERMINAL=console
+          GRUB_DISABLE_RECOVERY="true"
+          GRUB_GFXMODE=auto
+          GRUB_GFXPAYLOAD_LINUX=keep
+          GRUBEOF
+          
+          # Create GRUB theme directory
+          mkdir -p /boot/grub/themes/cybr
+          
+          # Update GRUB menu entries
+          if [ -f /etc/grub.d/10_linux ]; then
+              sed -i 's/Kali GNU\/Linux/cybr/g; s/kali/cybr/g' /etc/grub.d/10_linux
+          fi
+          
+          # Update live-boot GRUB configuration
+          mkdir -p /usr/share/live/build/bootloaders/grub-pc
+          cat > /usr/share/live/build/bootloaders/grub-pc/grub.cfg << 'LIVEGRUBEOF'
+          set default="0"
+          set timeout=30
+          
+          menuentry "cybr Live (amd64)" {
+              linux /live/vmlinuz boot=live components hostname=cybr username=root
+              initrd /live/initrd.img
+          }
+          
+          menuentry "cybr Live (amd64 - Safe Mode)" {
+              linux /live/vmlinuz boot=live components hostname=cybr username=root noapic noapm nodma nomce nolapic nosmp nosplash vga=normal
+              initrd /live/initrd.img
+          }
+          LIVEGRUBEOF
+          
+          EOF
+          chmod +x config/hooks/normal/0020-grub-branding.hook.chroot
+
+      - name: Create Display Manager Branding Hook
+        run: |
+          cd live-build-config
+          cat > config/hooks/normal/0030-sddm-branding.hook.chroot << 'EOF'
+          #!/bin/bash
+          set -e
+          
+          # Create SDDM configuration directory
+          mkdir -p /etc/sddm.conf.d
+          
+          # Configure SDDM with cybr branding
+          cat > /etc/sddm.conf.d/cybr.conf << 'SDDMEOF'
+          [General]
+          HaltCommand=/usr/bin/systemctl poweroff
+          RebootCommand=/usr/bin/systemctl reboot
+          
+          [Theme]
+          Current=breeze
+          
+          [Users]
+          MaximumUid=60513
+          MinimumUid=500
+          RememberLastUser=true
+          SDDMEOF
+          
+          # Update Plymouth (if exists) to disable splash
+          if [ -f /etc/default/grub ]; then
+              sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s/splash//g' /etc/default/grub
+              sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s/plymouth.enable=1/plymouth.enable=0/g' /etc/default/grub
+          fi
+          
+          # Remove Plymouth packages if they exist
+          apt-get remove --purge -y plymouth plymouth-themes 2>/dev/null || true
+          
+          EOF
+          chmod +x config/hooks/normal/0030-sddm-branding.hook.chroot
+
+      - name: Create Post-Build ISO Branding Hook
+        run: |
+          cd live-build-config
+          mkdir -p config/hooks/live
+          cat > config/hooks/live/0040-iso-branding.hook.binary << 'EOF'
+          #!/bin/bash
+          set -e
+          
+          # Update isolinux configuration for live boot
+          if [ -f binary/isolinux/isolinux.cfg ]; then
+              sed -i 's/Kali/cybr/g; s/kali/cybr/g' binary/isolinux/isolinux.cfg
+          fi
+          
+          if [ -f binary/isolinux/live.cfg ]; then
+              sed -i 's/Kali/cybr/g; s/kali/cybr/g' binary/isolinux/live.cfg
+          fi
+          
+          # Update EFI boot configuration
+          find binary/boot/grub -name "*.cfg" -exec sed -i 's/Kali/cybr/g; s/kali/cybr/g' {} \; 2>/dev/null || true
+          
+          # Update any remaining references in binary tree
+          find binary -name "*.txt" -o -name "*.cfg" -o -name "*.conf" | xargs sed -i 's/Kali GNU\/Linux/cybr/g; s/Kali/cybr/g; s/kali/cybr/g' 2>/dev/null || true
+          
+          EOF
+          chmod +x config/hooks/live/0040-iso-branding.hook.binary
+
+      - name: Add Custom Branding Files
         run: |
           cd live-build-config
           mkdir -p config/includes.chroot/usr/share/backgrounds
@@ -45,23 +226,53 @@ jobs:
           mkdir -p config/includes.chroot/usr/share/themes/CybrTheme
           mkdir -p config/includes.chroot/usr/share/icons/CybrIcons
           
-      - name: Configure GRUB and Remove Plymouth
-        run: |
-          cd live-build-config
-          mkdir -p config/includes.chroot/etc/default
-          echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash plymouth.enable=0"' | tee config/includes.chroot/etc/default/grub
-          sed -i 's/quiet splash/quiet/' config/includes.chroot/etc/default/grub
-          sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/s/quiet splash/quiet/' config/includes.chroot/etc/default/grub
-          sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT/s/plymouth.enable=0//g' config/includes.chroot/etc/default/grub
+          # Create a simple cybr logo placeholder
+          mkdir -p config/includes.chroot/usr/share/pixmaps
+          echo "cybr" > config/includes.chroot/usr/share/pixmaps/cybr-logo.txt
 
       - name: Build Cybr ISO
         run: |
           cd live-build-config
           bash ./build.sh --variant plasma --verbose
 
+      - name: Post-Build ISO Modifications
+        run: |
+          cd live-build-config
+          # Rename the generated ISO
+          if [ -f images/kali-linux-rolling-live-plasma-amd64.iso ]; then
+              mv images/kali-linux-rolling-live-plasma-amd64.iso images/cybr-rolling-live-plasma-amd64.iso
+          fi
+          
+          # Extract and modify ISO if needed for final branding touches
+          mkdir -p iso_temp
+          7z x images/cybr-rolling-live-plasma-amd64.iso -oiso_temp/ 2>/dev/null || {
+              # Fallback if 7z not available
+              mount -o loop images/cybr-rolling-live-plasma-amd64.iso iso_temp/ 2>/dev/null || true
+          }
+          
+          # Update any remaining references in the extracted ISO
+          find iso_temp -name "*.cfg" -o -name "*.txt" | xargs sed -i 's/kali/cybr/g; s/Kali/cybr/g' 2>/dev/null || true
+          
+          # Recreate ISO with final branding (if extraction was successful)
+          if [ -d iso_temp/live ]; then
+              genisoimage -r -J -b isolinux/isolinux.bin -c isolinux/boot.cat \
+                  -no-emul-boot -boot-load-size 4 -boot-info-table \
+                  -V "cybr" -A "cybr" \
+                  -o images/cybr-final.iso iso_temp/ 2>/dev/null || {
+                  # If rebuild fails, use the original renamed file
+                  cp images/cybr-rolling-live-plasma-amd64.iso images/cybr-final.iso
+              }
+          else
+              cp images/cybr-rolling-live-plasma-amd64.iso images/cybr-final.iso
+          fi
+          
+          # Cleanup
+          umount iso_temp 2>/dev/null || true
+          rm -rf iso_temp
+
       - name: Rename and Verify ISO
         run: |
-          mv live-build-config/images/kali-linux-rolling-live-plasma-amd64.iso ./cybr.iso
+          cp live-build-config/images/cybr-final.iso ./cybr.iso
           ls -lh cybr.iso
 
       - name: Upload to SourceForge
