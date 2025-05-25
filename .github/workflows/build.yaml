@@ -238,38 +238,8 @@ jobs:
       - name: Post-Build ISO Modifications
         run: |
           cd live-build-config
-          # Rename the generated ISO
-          if [ -f images/kali-linux-rolling-live-plasma-amd64.iso ]; then
-              mv images/kali-linux-rolling-live-plasma-amd64.iso images/cybr-rolling-live-plasma-amd64.iso
-          fi
+          mv images/kali-linux-rolling-live-plasma-amd64.iso images/cybr-final.iso
           
-          # Extract and modify ISO if needed for final branding touches
-          mkdir -p iso_temp
-          7z x images/cybr-rolling-live-plasma-amd64.iso -oiso_temp/ 2>/dev/null || {
-              # Fallback if 7z not available
-              mount -o loop images/cybr-rolling-live-plasma-amd64.iso iso_temp/ 2>/dev/null || true
-          }
-          
-          # Update any remaining references in the extracted ISO
-          find iso_temp -name "*.cfg" -o -name "*.txt" | xargs sed -i 's/kali/cybr/g; s/Kali/cybr/g' 2>/dev/null || true
-          
-          # Recreate ISO with final branding (if extraction was successful)
-          if [ -d iso_temp/live ]; then
-              genisoimage -r -J -b isolinux/isolinux.bin -c isolinux/boot.cat \
-                  -no-emul-boot -boot-load-size 4 -boot-info-table \
-                  -V "cybr" -A "cybr" \
-                  -o images/cybr-final.iso iso_temp/ 2>/dev/null || {
-                  # If rebuild fails, use the original renamed file
-                  cp images/cybr-rolling-live-plasma-amd64.iso images/cybr-final.iso
-              }
-          else
-              cp images/cybr-rolling-live-plasma-amd64.iso images/cybr-final.iso
-          fi
-          
-          # Cleanup
-          umount iso_temp 2>/dev/null || true
-          rm -rf iso_temp
-
       - name: Rename and Verify ISO
         run: |
           cp live-build-config/images/cybr-final.iso ./cybr.iso
@@ -282,11 +252,6 @@ jobs:
           OSVER: 1
         run: |
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./cybr.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/Cybr-v${OSVER}.iso"
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cybr-iso
-          path: cybr.iso
 
       - name: Set Build Status
         id: set-status
