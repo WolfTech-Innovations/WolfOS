@@ -233,7 +233,7 @@ jobs:
       - name: Build Cybr ISO
         run: |
           cd live-build-config
-          bash ./build.sh --variant plasma --verbose
+          bash ./build.sh --variant minimal --verbose
 
       - name: Post-Build ISO Modifications
         run: |
