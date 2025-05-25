@@ -1,6 +1,6 @@
 [![Build WolfOS](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml/badge.svg)](https://github.com/WolfTech-Innovations/WolfOS/actions/workflows/build.yaml)
 ___
-# Welcome to cybr . . .
+# Welcome to cybr . . . the minimal Kali Linux fork.
 # Or Text (888) 680-2509 (TEXTING ONLY)
 
 ## Installation:
