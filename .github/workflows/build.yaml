@@ -33,9 +33,9 @@ jobs:
       
       - name: Add Custom Packages
         run: |
-          cd live-build-config
-          mkdir -p config/package-lists
-          echo "plasma-desktop sddm nmap iptables ufw fail2ban clamav wireshark hydra cewl nano curl wget git" | tee config/package-lists/cybr.list.chroot
+             cd live-build-config
+             mkdir -p config/package-lists
+             echo "plasma-desktop sddm nano curl wget git nmap iptables ufw fail2ban clamav suricata psad rkhunter lynis tripwire wireshark hydra cewl theharvester dnsenum whois dnsutils netcat john hashcat sqlmap gobuster dirb steghide binwalk radare2 exiftool" | tee config/package-lists/cybr.list.chroot
 
       - name: Create OS Release Branding Hook
         run: |
