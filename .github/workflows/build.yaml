@@ -194,7 +194,7 @@ jobs:
         env:
           SF_USER: ${{ secrets.SF_USER }}
           SF_PASS: ${{ secrets.SF_PASS }}
-          OSVER: 1
+          OSVER: 2
         run: |
           sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no ./cybr.iso "$SF_USER@frs.sourceforge.net:/home/frs/project/wolfos/Cybr-v${OSVER}.iso"
 
