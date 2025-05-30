@@ -30,20 +30,63 @@ jobs:
           echo 'LB_BUILD_WITH_CHROOT="true"' | tee -a auto/config
           echo 'LB_COMPRESSION="xz"' | tee -a auto/config
           echo 'LB_BOOTAPPEND_LIVE="boot=live components hostname=cybr username=root"' | tee -a auto/config
-
+   
       - name: Add Custom Packages
         run: |
           cd live-build-config
           mkdir -p config/package-lists
           echo "plasma-desktop sddm aircrack-ng nmap goldeneye hydra sqlmap iptables ufw fail2ban clamav wireshark tcpdump nano curl wget cowsay beef wine" | tee config/package-lists/cybr.list.chroot
 
-      - name: Add Custom Branding
-        run: |
-          cd live-build-config
-          mkdir -p config/includes.chroot/usr/share/backgrounds
-          mkdir -p config/includes.chroot/etc/sddm
-          mkdir -p config/includes.chroot/usr/share/themes/CybrTheme
-          mkdir -p config/includes.chroot/usr/share/icons/CybrIcons
+      
+          HOME_URL="https://wolfos.uk/"
+          ANSI_COLOR="1;31"
+          OSEOF
+          
+          # Update lsb-release file
+          cat > /etc/lsb-release << 'LSBEOF'
+          DISTRIB_ID=cybr
+          DISTRIB_RELEASE=rolling
+          DISTRIB_CODENAME=cybr
+          DISTRIB_DESCRIPTION="cybr rolling"
+          LSBEOF
+          
+          # Update issue files
+          echo "cybr \\n \\l" > /etc/issue
+          echo "cybr" > /etc/issue.net
+          
+          # Update hostname
+          echo "cybr" > /etc/hostname
+          
+          # Update hosts file
+          sed -i 's/kali/cybr/g' /etc/hosts 2>/dev/null || true
+          echo "127.0.1.1    cybr" >> /etc/hosts
+          
+          # Update motd
+          cat > /etc/motd << 'MOTDEOF'
+          
+          Welcome to cybr - Security-Focused Linux Distribution
+          
+          MOTDEOF
+          
+          # Update desktop files and branding
+          find /usr/share/applications -name "*.desktop" -exec sed -i 's/Kali/cybr/g; s/kali/cybr/g' {} \; 2>/dev/null || true
+          
+          # Update any remaining Kali references
+          find /etc -type f -name "*.conf" -exec sed -i 's/kali/cybr/g; s/Kali/cybr/g' {} \; 2>/dev/null || true
+          
+          # Update default user shell prompt
+          if [ -f /etc/bash.bashrc ]; then
+              sed -i 's/kali/cybr/g; s/Kali/cybr/g' /etc/bash.bashrc
+          fi
+          
+          # Update any package manager sources that reference kali
+          if [ -f /etc/apt/sources.list ]; then
+              sed -i 's/kali-rolling/cybr-rolling/g' /etc/apt/sources.list
+          fi
+          
+          EOF
+          chmod +x config/hooks/normal/0010-cybr-branding.hook.chroot
+
           
       - name: Configure GRUB and Remove Plymouth
         run: |
