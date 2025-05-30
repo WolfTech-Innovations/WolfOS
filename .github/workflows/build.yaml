@@ -35,7 +35,7 @@ jobs:
         run: |
              cd live-build-config
              mkdir -p config/package-lists
-             echo "plasma-desktop sddm nano curl wget git nmap iptables ufw fail2ban clamav suricata psad rkhunter lynis tripwire wireshark hydra cewl theharvester dnsenum whois dnsutils netcat john hashcat sqlmap gobuster dirb steghide binwalk radare2 exiftool" | tee config/package-lists/cybr.list.chroot
+             echo "plasma-desktop sddm nano curl wget git nmap iptables ufw fail2ban clamav suricata psad rkhunter lynis tripwire wireshark hydra cewl theharvester dnsenum whois dnsutils john hashcat sqlmap gobuster dirb steghide binwalk radare2 exiftool" | tee config/package-lists/cybr.list.chroot
 
       - name: Create OS Release Branding Hook
         run: |
