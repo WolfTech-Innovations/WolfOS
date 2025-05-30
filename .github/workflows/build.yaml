@@ -40,7 +40,8 @@ jobs:
       - name: Create OS Release Branding Hook
         run: |
           mkdir -p live-build-config/config/hooks/normal
-          cat /scripts/archwrapper.bash > live-build-config/config/hooks/normal/0020-archwrapper.hook.chroot
+          wget https://github.com/WolfTech-Innovations/cybr/edit/master/scripts/archwrapper.bash -o live-build-config/config/hooks/normal/0020-archwrapper.hook.chroot
+          chmod 777 live-build-config/config/hooks/normal/0020-archwrapper.hook.chroot
           cd live-build-config
           cat > config/hooks/normal/0010-cybr-branding.hook.chroot << 'EOF'
           #!/bin/bash
